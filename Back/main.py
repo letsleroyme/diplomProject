@@ -19,7 +19,7 @@ def upload():
 def uploadSucc():
     if request.method == 'POST':
         return "Успешно"
-    return "Успешно"
+    return "Успешно."
 
 
 
