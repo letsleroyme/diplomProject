@@ -5,16 +5,13 @@
     <!-- <title>Таблица</title> -->
     <table border="1">
         <tr>
-       {%for key in name %}
-                <th>{{key}}</th>
-       {% endfor %}
-         </tr>
+       {%for key, value in data.items() %}
         <tr>
-       {%for key in data %}
-                <th>{{key}}</th>
+            {%for i in value %}
+                <td>{{i}}</td>
+            {% endfor %}
+        </tr>
        {% endfor %}
-         </tr>
-
   </table>
 </head>
 <body>
