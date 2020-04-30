@@ -12,7 +12,8 @@ def upload():
     if request.method == 'POST':
         f = request.files['file']
         fileName = f.filename
-        f.save('C:\\Users\\Дарья\\Desktop\\Диплом\\diplomProject\\Back\\' + fileName)
+#         f.save('/home/anatoly/diplomProject/Back/' + fileName)
+        f.save('/home/anatoly/diplomProject/Back/' + fileName)
         data = pd.read_csv(fileName, header=None)
         dct = GetDictFromPandas(data)
         return jsonify(dct)

@@ -17,6 +17,7 @@
       <div class="col l1 ">
         <div class="upload-btn">
           <button class="btn" @click="submitFile">Загрузить</button>
+<!--          <div>{{info}}</div>-->
         </div>
       </div>
     </div>
@@ -28,29 +29,18 @@ import axios from 'axios'
 export default {
   name: 'uploadFile',
   data:()=>({
-    file: ''
+    file: '',
+    info: null
   }),
   methods: {
     handleUploadFile() {
       this.file = this.$refs.file.files[0]
-      console.log(this.file)
     },
-    submitFile() {
+    async submitFile() {
       let formData = new FormData()
       formData.append('file', this.file)
-      axios.post( 'http://localhost:5000/',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      ).then(function(){
-        console.log('SUCCESS!!');
-      })
-      .catch(function(){
-        console.log('FAILURE!!');
-      });
+      await this.$store.dispatch('uploadFile', formData)
+      await this.$router.push('/tables')
     }
   }
 }
