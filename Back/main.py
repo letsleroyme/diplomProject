@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, redirect, url_for
 from flask_cors import CORS
 import pandas as pd
-import numpy as np
 
 #from werkzeug import secure_filename
 app = Flask(__name__)
@@ -34,7 +33,10 @@ def GetDictFromPandas(data):
         lst = []
         lst.append(i)
         for j in range(cols):
-            lst.append(data.iloc[i-1, j])
+            if (str)(data.iloc[i-1, j]) == 'nan':
+                lst.append("NaN")
+            else:
+                lst.append(data.iloc[i-1, j])
         d[i] = lst
     return d
 
