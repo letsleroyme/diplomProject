@@ -23,21 +23,12 @@
             <button class="btn">Кнопка 4</button>
           </div>
 
-          <div  class="table-body">
-            <table border="1">
-              <caption>Таблица размеров обуви</caption>
-              <tr>
-                <th>Россия</th>
-                <th>Великобритания</th>
-                <th>Европа</th>
-                <th>Длина ступни, см</th>
+          <div class="table-body">
+            <table>
+              <tr v-for="i in file">
+                  <td v-for="j in i" >{{j}}</td>
               </tr>
-              <tr><td>34,5</td><td>3,5</td><td>36</td><td>23</td></tr>
-              <tr><td>35,5</td><td>4</td><td>36⅔</td><td>23–23,5</td></tr>
-              <tr><td>36</td><td>4,5</td><td>37⅓</td><td>23,5</td></tr>
-              <tr><td>36,5</td><td>5</td><td>38</td><td>24</td></tr>
-              <tr><td>37</td><td>5,5</td><td>38⅔</td><td>24,5</td></tr>
-              <tr><td>38</td><td>6</td><td>39⅓</td><td>25</td></tr>
+
             </table>
           </div>
         </div>
@@ -50,12 +41,14 @@
     name: 'tables',
     data:()=>({
       loader: true,
-      file: ''
+      file: '',
+      tables: ''
     }),
     mounted() {
       this.file = this.$store.state.table.file.data
+      console.log(typeof this.file)
       setTimeout(() => {
-        if (this.file !== '') {
+        if (this.file.length !== 0) {
           this.loader = false
         }
       }, 1000)
@@ -80,13 +73,32 @@
         padding: 20px;
         display: flex;
         justify-content: space-around;
+        height: 100px;
       }
 
       .table-body {
-        padding: 20px;
+        padding: 20px 10px 10px 10px;
+        overflow: scroll;
+        height: 500px;
+        margin-bottom: 0;
 
         table {
-          height: 300px;
+
+          tr:first-child{
+            background-color: lightgrey;
+          }
+
+          td{
+            border: 1px solid darkgrey;
+          }
+
+          td:first-child {
+            background-color: lightgrey;
+          }
+
+          .grey {
+            background-color: grey;
+          }
         }
       }
     }
