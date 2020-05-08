@@ -1,8 +1,11 @@
-from flask import Flask, request, jsonify, redirect, url_for
+from flask import Flask, request, jsonify, redirect, url_for, g
 from flask_cors import CORS
 import pandas as pd
+from Back.ProcessData import *
 
 #from werkzeug import secure_filename
+from Back.ProcessData import GetDict
+
 app = Flask(__name__)
 
 CORS(app)
@@ -19,26 +22,28 @@ def upload():
         return response
     f.save('C:\\Users\\Дарья\\Desktop\\Диплом\\diplomProject\\Back\\' + fileName)
     data = pd.read_csv(fileName, header=None)
+    g.filename = fileName
+    g.dataframe = data
     dct = GetDictFromPandas(data)
     return jsonify(dct)
 
 
-def GetDictFromPandas(data):
-    cols = data.shape[1]
-    rows = data.shape[0]
-    a =[c for c in range(1, cols+1)]
-    d = {}
-    d[0] = a
-    for i in range(1, rows+1):
-        lst = []
-        lst.append(i)
-        for j in range(cols):
-            if (str)(data.iloc[i-1, j]) == 'nan':
-                lst.append("NaN")
-            else:
-                lst.append(data.iloc[i-1, j])
-        d[i] = lst
-    return d
+@app.route("/table", methods=['GET','POST'])
+def tbl():
+    filename = getattr(g, 'filename', None)
+    data = getattr(g, 'dataframe', None)
+    if request.method == 'POST':
+        lst = request.form.getlist('checkboxTable')
+        if len(lst == 0):
+            return jsonify({'fail': 'list is empty'})
+        else:
+            return jsonify({'success': 'checkbox data is recieved'})
+        #обработка чекбоксов
+        #обработка датасета согласно чекбоксам
+    else:
+        return GetDict(data)# вернуть список столбцов в виде джсон
+
+
 
 
 if __name__ == "__main__":
