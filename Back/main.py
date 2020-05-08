@@ -34,7 +34,7 @@ def tbl():
     data = getattr(g, 'dataframe', None)
     if request.method == 'POST':
         lst = request.form.getlist('checkboxTable')
-        if len(lst == 0):
+        if len(lst) == 0:
             return jsonify({'fail': 'list is empty'})
         else:
             return jsonify({'success': 'checkbox data is recieved'})
