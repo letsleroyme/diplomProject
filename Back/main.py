@@ -27,29 +27,24 @@ def upload():
     dct = GetDictFromPandas(data)
     return jsonify(dct)
 
+
 @app.route("/table", methods=['GET','POST'])
 def tbl():
-    #filename = getattr(g, 'filename', None)
-    #data = getattr(g, 'dataframe', None)
-    data = pd.read_csv('titanic.csv', header=None)
+    filename = getattr(g, 'filename', None)
+    data = getattr(g, 'dataframe', None)
     if request.method == 'POST':
-        a = request.form.get('action1_check1')
-        b = request.form.get('action1_check2')
-        c = request.form.get('action2_check1')
-        d = request.form.get('action2_check2')
-        e = request.form.get('action2_check3')
-        f = request.form.get('action3_check1')
-        g = request.form.get('action3_check2')
-        h = request.form.get('action3_check3')
-
-        if a == False:
+        lst = request.form.getlist('checkboxTable')
+        if len(lst == 0):
             return jsonify({'fail': 'list is empty'})
         else:
             return jsonify({'success': 'checkbox data is recieved'})
         #обработка чекбоксов
         #обработка датасета согласно чекбоксам
     else:
-        return jsonify(GetDict(data))# вернуть список столбцов в виде джсон
+        return GetDict(data)# вернуть список столбцов в виде джсон
+
+
+
 
 if __name__ == "__main__":
     app.run()
