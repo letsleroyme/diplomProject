@@ -68,9 +68,9 @@
                   </div>
                 </div>
               </div>
-              <div class="button">
-                <button class="btn center">Применить</button>
-              </div>
+<!--              <div class="button">-->
+<!--                <button class="btn center">Применить</button>-->
+<!--              </div>-->
             </div>
             <div class="input-field col l4 action-2">
                <h4>Категориальные столбцы</h4>
@@ -134,7 +134,7 @@
                 </div>
               </div>
               <div class="button">
-                <button class="btn center">Применить</button>
+                <button class="btn center" @click="changeFile">Применить</button>
               </div>
             </div>
             <div class="input-field col l4 action-3">
@@ -198,9 +198,9 @@
                   </div>
                 </div>
               </div>
-              <div class="button">
-                <button class="btn center">Применить</button>
-              </div>
+<!--              <div class="button">-->
+<!--                <button class="btn center">Применить</button>-->
+<!--              </div>-->
             </div>
           </div>
 
@@ -235,7 +235,8 @@
       action3_check3: false,
     }),
     methods: {
-      openAction() {
+       async openAction() {
+        await this.$store.dispatch('getList')
         this.action = !this.action
         setTimeout(() => {
             M.FormSelect.init(this.$refs.select)
@@ -279,6 +280,20 @@
       action3check3() {
         this.action3_check3 = !this.action3_check3
       },
+      async changeFile() {
+         let formData = {
+           action1_check1: this.action1_check1,
+           action1_check2: this.action1_check2,
+           action2_check1: this.action2_check1,
+           action2_check2: this.action2_check2,
+           action2_check3: this.action2_check3,
+           action3_check1: this.action3_check1,
+           action3_check2: this.action3_check2,
+           action3_check3: this.action3_check3,
+         }
+
+         await this.$store.dispatch('changeFile', formData)
+      }
     },
     mounted() {
       this.file = this.$store.state.table.file.data

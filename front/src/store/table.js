@@ -32,6 +32,41 @@ export default {
             console.log(err)
           })
       })
-    }
+    },
+    async getList({dispatch, commit}) {
+      console.log("фыфы")
+      return new Promise((resolve, reject) => {
+        axios.get('http://localhost:5000/table')
+          .then(resp => {
+          resolve(resp)
+            console.log(resp)
+        })
+          .catch(err => {
+            reject(err)
+            console.log(err)
+          })
+      })
+    },
+    async changeFile({dispatch, commit}, formData) {
+      console.log(formData)
+      console.log('succes')
+      return new Promise((resolve, reject) => {
+        axios.post( 'http://localhost:5000/table',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        ).then(resp => {
+          resolve(resp)
+          console.log(resp)
+        })
+          .catch(err => {
+            reject(err)
+            console.log(err)
+          })
+      })
+    },
   }
 }
