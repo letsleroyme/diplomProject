@@ -14,8 +14,9 @@ def RemoveNanForCol(data, colNumber):
 
 #---------------------для числовых значений-------------------------------
 def GetMeanValueForCol(filename, colNumber, dt):
-    data = np.genfromtxt(filename, dtype=dt, usecols=colNumber, delimiter=",", skip_header=1)
-    return np.mean(data) if dt == float else int(np.mean(data))
+    data = np.genfromtxt(filename, dtype=float, usecols=colNumber, delimiter=",", skip_header=1)
+    print(data)
+    return np.nanmean(data) if dt == float else int(np.nanmean(data))
 
 def IsFloat(data):# если в столбце есть хоть один эл-т с точкой то флоат
     for i in data:
@@ -74,12 +75,14 @@ def GetTextWithoutDots(data, colNumber):
     newdata.iloc[:, colNumber-1] = newdata.iloc[:, colNumber-1].replace('[^a-zA-Z0-9]', ' ', regex=True)
     return newdata
 #-------------------------------------------------------------------------
-data = pd.read_csv('titanic.csv', header=None)
-data = data.iloc[1:, :]
-colnum = 4
+#filname = 'titAge1.csv'
+#data = pd.read_csv(filname, header=None)
+#data = data.iloc[1:, :]
+
+#colnum = 10
 #----------числовые------------
-#newdata = ReplaceNanForNumeric(data, colnum, 'titanic.csv')
-#print(newdata.iloc[60:70, 5:12])
+#newdata = ReplaceNanForNumeric(data, colnum, filname)
+#print(newdata.iloc[:, 5:10])
 #______________________________________________________________________________________________________________________
 #--------категориальные--------
 #print(ReplaceNanForCategoric(data, colnum).iloc[828:835,:])
@@ -113,7 +116,3 @@ def GetDictFromPandas(data):
                 lst.append(data.iloc[i-1, j])
         d[i] = lst
     return d
-
-
-
-
