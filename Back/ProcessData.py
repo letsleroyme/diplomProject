@@ -15,7 +15,6 @@ def RemoveNanForCol(data, colNumber):
 #---------------------для числовых значений-------------------------------
 def GetMeanValueForCol(filename, colNumber, dt):
     data = np.genfromtxt(filename, dtype=float, usecols=colNumber, delimiter=",", skip_header=1)
-    print(data)
     return np.nanmean(data) if dt == float else int(np.nanmean(data))
 
 def IsFloat(data):# если в столбце есть хоть один эл-т с точкой то флоат
@@ -46,7 +45,7 @@ def ReplaceNanForCategoric(data, colNumber):
     newdata = data.copy()
     for i in data.iloc[:, colNumber - 1]:
         if (str)(i) == 'nan':
-            newdata.iloc[k, colnum - 1] = cv
+            newdata.iloc[k, colNumber - 1] = cv
         k = k + 1
     return newdata
 
