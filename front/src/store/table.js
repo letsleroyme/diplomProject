@@ -33,7 +33,7 @@ export default {
           })
       })
     },
-    async getList({dispatch, commit}) {
+    async getList() {
       console.log("фыфы")
       return new Promise((resolve, reject) => {
         axios.get('http://localhost:5000/table')
@@ -47,6 +47,17 @@ export default {
           })
       })
     },
+    // async getList() {
+    //   axios
+    //     // .get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    //     .get('http://localhost:5000/table')
+    //     .then(response => {
+    //       console.log(response)
+    //     })
+    //     .catch(err => {
+    //     console.log(err)
+    //   })
+    // },
     async changeFile({dispatch, commit}, formData) {
       console.log(formData)
       console.log('succes')
@@ -55,7 +66,7 @@ export default {
           formData,
           {
             headers: {
-              'Content-Type': 'multipart/form-data'
+              'Content-Type': "application/json"
             }
           }
         ).then(resp => {

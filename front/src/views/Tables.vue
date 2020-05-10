@@ -236,7 +236,7 @@
     }),
     methods: {
        async openAction() {
-        await this.$store.dispatch('getList')
+        // await this.$store.dispatch('getList')
         this.action = !this.action
         setTimeout(() => {
             M.FormSelect.init(this.$refs.select)
@@ -293,6 +293,7 @@
          }
 
          await this.$store.dispatch('changeFile', formData)
+         this.action = !this.action
       }
     },
     mounted() {
