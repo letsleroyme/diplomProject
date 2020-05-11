@@ -1,14 +1,16 @@
-from flask import Flask, request, jsonify, redirect, url_for, g
+from flask import Flask, request, jsonify, redirect, url_for
 from flask_cors import CORS
 import pandas as pd
+import json
 from Back.ProcessData import *
 
-#from werkzeug import secure_filename
-from Back.ProcessData import GetDict
-
 app = Flask(__name__)
-
 CORS(app)
+cors = CORS(app, resources={
+    r"/*": {
+        "origins": "*"
+    }
+})
 
 @app.route("/", methods=['GET','POST'])
 def upload():
@@ -22,38 +24,43 @@ def upload():
         return response
     f.save('C:\\Users\\Дарья\\Desktop\\Диплом\\diplomProject\\Back\\' + fileName)
     data = pd.read_csv(fileName, header=None)
-    g.filename = fileName
-    g.dataframe = data
+
     dct = GetDictFromPandas(data)
     return jsonify(dct)
 
 
 @app.route("/table", methods=['GET','POST'])
 def tbl():
-    #filename = getattr(g, 'filename', None)
-    #data = getattr(g, 'dataframe', None)
     data = pd.read_csv('titanic.csv', header=None)
+    #data = data.iloc[1:, :]
+    #outdata= data.copy()
     if request.method == 'POST':
-        a = request.form.get('action1_check1')
-        b = request.form.get('action1_check2')
-        c = request.form.get('action2_check1')
-        d = request.form.get('action2_check2')
-        e = request.form.get('action2_check3')
-        f = request.form.get('action3_check1')
-        g = request.form.get('action3_check2')
-        h = request.form.get('action3_check3')
+        requestDict = request.get_json(force=True)
+        '''if requestDict['action1_check1']:
+            outdata = ReplaceNanForNumeric(outdata, 6, 'titanic.csv')
 
-        if a == False:
-            return jsonify({'fail': 'action1_check1 is False'})
-        else:
-            return jsonify({'success': 'action1_check1 is recieved'})
-        #обработка чекбоксов
-        #обработка датасета согласно чекбоксам
+        if requestDict['action1_check2'] or requestDict['action2_check2'] or requestDict['action3_check3']:
+            outdata = RemoveNanForCol(outdata, 11)
+
+        if requestDict['action2_check1']:
+            outdata = ReplaceNanForCategoric(outdata, 12)
+
+        if requestDict['action2_check3']:
+            outdata = ReplaceTextCategToNum(outdata, 12)
+
+        if requestDict['action3_check1']:
+            outdata = GetLowLetterForText(outdata, 4)
+
+        if requestDict['action3_check2']:
+            outdata = GetTextWithoutDots(outdata, 4)'''
+
+        if requestDict['action1_check1']:
+            return jsonify({'success':'action1_check1 is True'})
     else:
         return jsonify(GetDict(data))# вернуть список столбцов в виде джсон
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
 
 
