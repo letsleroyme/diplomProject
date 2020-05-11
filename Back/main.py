@@ -16,8 +16,8 @@ cors = CORS(app, resources={
 def upload():
     f = request.files['file']
     fileName = f.filename
-    formt = fileName.split(".")
-    if formt[1] != 'csv':
+    fort = fileName.split(".")
+    if fort[1] != 'csv':
         response = jsonify({'status': 415, 'error': 'Unsupported Media Type',
                             'message': 'Wrong type of file'})
         response.status_code = 415
