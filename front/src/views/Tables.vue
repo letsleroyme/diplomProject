@@ -26,11 +26,9 @@
           <div v-if="action" class="table-action">
             <div class="input-field col l4 action-1">
               <h4>Числовые столбцы</h4>
-              <select ref="select">
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
+              <select ref="select" v-model="numberColumns" multiple>
+                <option value="" disabled>Выберите колонку</option>
+                <option :value="i" v-for="i in list">{{i}}</option>
               </select>
               <div class="check">
                 <div class="check-1">
@@ -68,17 +66,12 @@
                   </div>
                 </div>
               </div>
-<!--              <div class="button">-->
-<!--                <button class="btn center">Применить</button>-->
-<!--              </div>-->
             </div>
             <div class="input-field col l4 action-2">
                <h4>Категориальные столбцы</h4>
-              <select ref="select2">
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
+              <select ref="select2" v-model="categoricalColumns" multiple>
+                <option value="" disabled>Выберите колонку</option>
+                <option :value="i" v-for="i in list">{{i}}</option>
               </select>
               <div class="check">
                 <div class="check-1">
@@ -139,11 +132,9 @@
             </div>
             <div class="input-field col l4 action-3">
               <h4>Столбцы с текстовыми данными</h4>
-              <select ref="select3">
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
+              <select ref="select3" v-model="textDataColumns" multiple>
+                <option value="" disabled>Выберите колонку</option>
+                <option :value="i" v-for="i in list">{{i}}</option>
               </select>
               <div class="check">
                 <div class="check-1">
@@ -198,9 +189,6 @@
                   </div>
                 </div>
               </div>
-<!--              <div class="button">-->
-<!--                <button class="btn center">Применить</button>-->
-<!--              </div>-->
             </div>
           </div>
 
@@ -224,7 +212,10 @@
       loader: true,
       file: '',
       action: false,
-      selected: '',
+      numberColumns: [],
+      categoricalColumns: [],
+      textDataColumns: [],
+      list: '',
       action1_check1: false,
       action1_check2: false,
       action2_check1: false,
@@ -236,12 +227,14 @@
     }),
     methods: {
        async openAction() {
-        // await this.$store.dispatch('getList')
-        this.action = !this.action
-        setTimeout(() => {
-            M.FormSelect.init(this.$refs.select)
-            M.FormSelect.init(this.$refs.select2)
-            M.FormSelect.init(this.$refs.select3)
+         await this.$store.dispatch('getList')
+         this.list = this.$store.state.table.list.data
+         // console.log(this.list)
+         this.action = !this.action
+         setTimeout(() => {
+           M.FormSelect.init(this.$refs.select)
+           M.FormSelect.init(this.$refs.select2)
+           M.FormSelect.init(this.$refs.select3)
         }, 0)
       },
       action1check1() {
@@ -281,19 +274,22 @@
         this.action3_check3 = !this.action3_check3
       },
       async changeFile() {
-         let formData = {
-           action1_check1: this.action1_check1,
-           action1_check2: this.action1_check2,
-           action2_check1: this.action2_check1,
-           action2_check2: this.action2_check2,
-           action2_check3: this.action2_check3,
-           action3_check1: this.action3_check1,
-           action3_check2: this.action3_check2,
-           action3_check3: this.action3_check3,
-         }
+        let formData = {
+          numberColumns: this.numberColumns,
+          categoricalColumns:this.categoricalColumns,
+          textDataColumns: this.textDataColumns,
+          action1_check1: this.action1_check1,
+          action1_check2: this.action1_check2,
+          action2_check1: this.action2_check1,
+          action2_check2: this.action2_check2,
+          action2_check3: this.action2_check3,
+          action3_check1: this.action3_check1,
+          action3_check2: this.action3_check2,
+          action3_check3: this.action3_check3,
+        }
 
-         await this.$store.dispatch('changeFile', formData)
-         this.action = !this.action
+       await this.$store.dispatch('changeFile', formData)
+       this.action = !this.action
       }
     },
     mounted() {
