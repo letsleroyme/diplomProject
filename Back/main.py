@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, redirect, url_for
+from flask import Flask, request, jsonify, g, session
 from flask_cors import CORS
 import pandas as pd
 import json
@@ -11,6 +11,8 @@ cors = CORS(app, resources={
         "origins": "*"
     }
 })
+app.config['SECRET_KEY'] = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8' #!!! секретный ключ, нужен для нормальной работы сессии
+
 
 @app.route("/", methods=['GET','POST'])
 def upload():
@@ -24,7 +26,8 @@ def upload():
         return response
     f.save('C:\\Users\\Дарья\\Desktop\\Диплом\\diplomProject\\Back\\' + fileName)
     data = pd.read_csv(fileName, header=None)
-
+    #g.ddata = data
+    session['abc'] = f.filename  # !!! записываю в сессию имя файла
     dct = GetDictFromPandas(data)
     return jsonify(dct)
 
@@ -32,7 +35,15 @@ def upload():
 @app.route("/table", methods=['GET','POST'])
 def tbl():
     data = pd.read_csv('titanic.csv', header=None)
-    #data = data.iloc[1:, :]
+    count = 1000
+    while not session['abc'] and count:
+        count -= 1
+    filen = session['abc']# получаю инфу с сессии
+
+    #a = g.get('ddata', None)
+    print(session['abc'])
+
+    #data = exampleData.iloc[1:, :]
     #outdata= data.copy()
     if request.method == 'POST':
         requestDict = request.get_json(force=True)
@@ -61,6 +72,6 @@ def tbl():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
 
 
