@@ -11,7 +11,7 @@ cors = CORS(app, resources={
         "origins": "*"
     }
 })
-app.config['SECRET_KEY'] = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8' #!!! секретный ключ, нужен для нормальной работы сессии
+#app.config['SECRET_KEY'] = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8' #!!! секретный ключ, нужен для нормальной работы сессии
 
 
 @app.route("/", methods=['GET','POST'])
@@ -27,48 +27,51 @@ def upload():
     f.save('C:\\Users\\Дарья\\Desktop\\Диплом\\diplomProject\\Back\\' + fileName)
     data = pd.read_csv(fileName, header=None)
     #g.ddata = data
-    session['abc'] = f.filename  # !!! записываю в сессию имя файла
-    dct = GetDictFromPandas(data)
+    #session['abc'] = f.filename  # !!! записываю в сессию имя файла
+    dct = GetDictTable(data)
     return jsonify(dct)
-
 
 @app.route("/table", methods=['GET','POST'])
 def tbl():
-    data = pd.read_csv('titanic.csv', header=None)
-    count = 1000
-    while not session['abc'] and count:
-        count -= 1
-    filen = session['abc']# получаю инфу с сессии
+    filename = 'titanic.csv'
+    data = pd.read_csv(filename, header=None)
+    data = data.iloc[0:, :]
 
-    #a = g.get('ddata', None)
-    print(session['abc'])
-
-    #data = exampleData.iloc[1:, :]
-    #outdata= data.copy()
     if request.method == 'POST':
         requestDict = request.get_json(force=True)
-        '''if requestDict['action1_check1']:
-            outdata = ReplaceNanForNumeric(outdata, 6, 'titanic.csv')
+        ListOfNumCols = GetNumListOfColumn(requestDict['numberColumns'])
+        ListOfCatCols = GetNumListOfColumn(requestDict['categoricalColumns'])
+        ListOfTextCols = GetNumListOfColumn(requestDict['textDataColumns'])
 
-        if requestDict['action1_check2'] or requestDict['action2_check2'] or requestDict['action3_check3']:
-            outdata = RemoveNanForCol(outdata, 11)
+        outdata = data.copy()
+        if requestDict['action1_check1']:
+            outdata = ReplaceNanForNumeric(outdata, ListOfNumCols, filename)
+
+        if requestDict['action1_check2']:
+            outdata = RemoveNanForCol(outdata, ListOfNumCols)
 
         if requestDict['action2_check1']:
-            outdata = ReplaceNanForCategoric(outdata, 12)
+            outdata = ReplaceNanForCategoric(outdata, ListOfCatCols)
+
+        if requestDict['action2_check2']:
+            outdata = RemoveNanForCol(outdata, ListOfCatCols)
 
         if requestDict['action2_check3']:
-            outdata = ReplaceTextCategToNum(outdata, 12)
+            outdata = ReplaceTextCategToNum(outdata, ListOfCatCols)
 
         if requestDict['action3_check1']:
-            outdata = GetLowLetterForText(outdata, 4)
+            outdata = GetLowLetterForText(outdata, ListOfTextCols)
 
         if requestDict['action3_check2']:
-            outdata = GetTextWithoutDots(outdata, 4)'''
+            outdata = GetTextWithoutDots(outdata, ListOfTextCols)
 
-        if requestDict['action1_check1']:
-            return jsonify({'success':'action1_check1 is True'})
+        if requestDict['action3_check3']:
+            outdata = RemoveNanForCol(outdata, ListOfTextCols)
+
+        response = GetDictTable(outdata)
+        return jsonify(response)
     else:
-        return jsonify(GetDict(data))# вернуть список столбцов в виде джсон
+        return jsonify(GetDictColumns(data))# вернуть список столбцов в виде джсон
 
 
 if __name__ == "__main__":

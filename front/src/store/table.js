@@ -2,13 +2,18 @@ import axios from 'axios'
 
 export default {
   state: {
-    file: ''
+    file: '',
+    list: ''
   },
   mutations: {
     setFile(state, file) {
       // console.log('mutation')
       state.file = file
       // console.log(state.file)
+    },
+    setList(state, list) {
+      state.list = list
+      // console.log(state.list)
     }
   },
   actions: {
@@ -33,13 +38,12 @@ export default {
           })
       })
     },
-    async getList() {
-      console.log("фыфы")
+    async getList({commit}) {
       return new Promise((resolve, reject) => {
         axios.get('http://localhost:5000/table')
           .then(resp => {
-          resolve(resp)
-            console.log(resp)
+            resolve(resp)
+            commit('setList', resp)
         })
           .catch(err => {
             reject(err)
@@ -47,20 +51,9 @@ export default {
           })
       })
     },
-    // async getList() {
-    //   axios
-    //     // .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-    //     .get('http://localhost:5000/table')
-    //     .then(response => {
-    //       console.log(response)
-    //     })
-    //     .catch(err => {
-    //     console.log(err)
-    //   })
-    // },
     async changeFile({dispatch, commit}, formData) {
-      console.log(formData)
-      console.log('succes')
+      // console.log(formData)
+      // console.log('succes')
       return new Promise((resolve, reject) => {
         axios.post( 'http://localhost:5000/table',
           formData,

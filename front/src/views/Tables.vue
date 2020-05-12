@@ -26,11 +26,9 @@
           <div v-if="action" class="table-action">
             <div class="input-field col l4 action-1">
               <h4>Числовые столбцы</h4>
-              <select ref="select">
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
+              <select ref="select" v-model="numberColumns" multiple>
+                <option value="" disabled>Выберите колонку</option>
+                <option :value="i" v-for="i in list">{{i}}</option>
               </select>
               <div class="check">
                 <div class="check-1">
@@ -68,17 +66,12 @@
                   </div>
                 </div>
               </div>
-<!--              <div class="button">-->
-<!--                <button class="btn center">Применить</button>-->
-<!--              </div>-->
             </div>
             <div class="input-field col l4 action-2">
                <h4>Категориальные столбцы</h4>
-              <select ref="select2">
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
+              <select ref="select2" v-model="categoricalColumns" multiple>
+                <option value="" disabled>Выберите колонку</option>
+                <option :value="i" v-for="i in list">{{i}}</option>
               </select>
               <div class="check">
                 <div class="check-1">
@@ -139,11 +132,9 @@
             </div>
             <div class="input-field col l4 action-3">
               <h4>Столбцы с текстовыми данными</h4>
-              <select ref="select3">
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
+              <select ref="select3" v-model="textDataColumns" multiple>
+                <option value="" disabled>Выберите колонку</option>
+                <option :value="i" v-for="i in list">{{i}}</option>
               </select>
               <div class="check">
                 <div class="check-1">
@@ -198,9 +189,6 @@
                   </div>
                 </div>
               </div>
-<!--              <div class="button">-->
-<!--                <button class="btn center">Применить</button>-->
-<!--              </div>-->
             </div>
           </div>
 
@@ -224,7 +212,10 @@
       loader: true,
       file: '',
       action: false,
-      selected: '',
+      numberColumns: [],
+      categoricalColumns: [],
+      textDataColumns: [],
+      list: '',
       action1_check1: false,
       action1_check2: false,
       action2_check1: false,
@@ -236,12 +227,14 @@
     }),
     methods: {
        async openAction() {
-        await this.$store.dispatch('getList')
-        this.action = !this.action
-        setTimeout(() => {
-            M.FormSelect.init(this.$refs.select)
-            M.FormSelect.init(this.$refs.select2)
-            M.FormSelect.init(this.$refs.select3)
+         await this.$store.dispatch('getList')
+         this.list = this.$store.state.table.list.data
+         // console.log(this.list)
+         this.action = !this.action
+         setTimeout(() => {
+           M.FormSelect.init(this.$refs.select)
+           M.FormSelect.init(this.$refs.select2)
+           M.FormSelect.init(this.$refs.select3)
         }, 0)
       },
       action1check1() {
@@ -281,18 +274,21 @@
         this.action3_check3 = !this.action3_check3
       },
       async changeFile() {
-         let formData = {
-           action1_check1: this.action1_check1,
-           action1_check2: this.action1_check2,
-           action2_check1: this.action2_check1,
-           action2_check2: this.action2_check2,
-           action2_check3: this.action2_check3,
-           action3_check1: this.action3_check1,
-           action3_check2: this.action3_check2,
-           action3_check3: this.action3_check3,
-         }
-
-         await this.$store.dispatch('changeFile', formData)
+        let formData = {
+          numberColumns: this.numberColumns,
+          categoricalColumns:this.categoricalColumns,
+          textDataColumns: this.textDataColumns,
+          action1_check1: this.action1_check1,
+          action1_check2: this.action1_check2,
+          action2_check1: this.action2_check1,
+          action2_check2: this.action2_check2,
+          action2_check3: this.action2_check3,
+          action3_check1: this.action3_check1,
+          action3_check2: this.action3_check2,
+          action3_check3: this.action3_check3,
+        }
+       await this.$store.dispatch('changeFile', formData)
+       this.action = !this.action
       }
     },
     mounted() {
@@ -312,20 +308,16 @@
     margin-top: 30px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-
     .preloader {
       padding-top: 200px;
     }
-
     .table-main {
-
       .table-button {
         padding: 20px;
         display: flex;
         justify-content: space-around;
         height: 100px;
       }
-
       .table-action {
         display: flex;
         /*border-bottom: 1px solid grey;*/
@@ -333,178 +325,147 @@
         border-radius: 5px;
         margin: 0 10px 20px 10px;
         box-shadow: 0 0 5px rgba(0,0,0,0.5);
-
         h4{
           font-size: 16px;
           text-align: center;
           font-weight: bold;
           margin: 10px 0;
         }
-
         .action-1 {
           margin: 10px 0;
           padding: 10px;
           /*border: 1px solid blue;*/
-
           .check {
             .check-1{
               display: flex;
               align-items: center;
-
               .check_image{
                 border: 1px solid grey;
                 height: 26px;
                 width: 26px;
                 padding-right: 24px;
               }
-
               .check_text{
                 margin-left: 10px;
               }
             }
-
             .check-2{
               display: flex;
               align-items: center;
-
               .check_image{
                 border: 1px solid grey;
                 height: 26px;
                 width: 26px;
                 padding-right: 24px;
               }
-
               .check_text{
                 margin-left: 10px;
               }
             }
           }
-
           .button {
             margin: 5px 0 10px 0;
             display: flex;
             justify-content: center;
           }
         }
-
         .action-2 {
           margin: 10px 0;
           padding: 10px;
           border-right: 1px solid grey;
           border-left: 1px solid grey;
-
           .check {
             .check-1{
               display: flex;
               align-items: center;
-
               .check_image{
                 border: 1px solid grey;
                 height: 26px;
                 width: 26px;
                 padding-right: 24px;
               }
-
               .check_text{
                 margin-left: 10px;
               }
             }
-
             .check-2{
               display: flex;
               align-items: center;
-
               .check_image{
                 border: 1px solid grey;
                 height: 26px;
                 width: 26px;
                 padding-right: 24px;
               }
-
               .check_text{
                 margin-left: 10px;
               }
             }
-
             .check-3{
               display: flex;
               align-items: center;
-
               .check_image{
                 border: 1px solid grey;
                 height: 26px;
                 width: 26px;
                 padding-right: 24px;
               }
-
               .check_text{
                 margin-left: 10px;
               }
             }
           }
-
           .button {
             margin: 5px 0 10px 0;
             display: flex;
             justify-content: center;
           }
         }
-
         .action-3 {
           margin: 10px 0;
           padding: 10px;
           /*border: 1px solid green;*/
-
           .check {
             .check-1{
               display: flex;
               align-items: center;
-
               .check_image{
                 border: 1px solid grey;
                 height: 26px;
                 width: 26px;
                 padding-right: 24px;
               }
-
               .check_text{
                 margin-left: 10px;
               }
             }
-
             .check-2{
               display: flex;
               align-items: center;
-
               .check_image{
                 border: 1px solid grey;
                 height: 26px;
                 width: 26px;
                 padding-right: 24px;
               }
-
               .check_text{
                 margin-left: 10px;
               }
             }
-
             .check-3{
               display: flex;
               align-items: center;
-
               .check_image{
                 border: 1px solid grey;
                 height: 26px;
                 width: 26px;
                 padding-right: 24px;
               }
-
               .check_text{
                 margin-left: 10px;
               }
             }
           }
-
           .button {
             margin: 5px 0 10px 0;
             display: flex;
@@ -512,27 +473,21 @@
           }
         }
       }
-
       .table-body {
         padding: 0 10px;
         overflow: scroll;
         height: 500px;
         margin-bottom: 0;
-
         table {
-
           tr:first-child{
             background-color: lightgrey;
           }
-
           td{
             border: 1px solid darkgrey;
           }
-
           td:first-child {
             background-color: lightgrey;
           }
-
           .grey {
             background-color: grey;
           }
