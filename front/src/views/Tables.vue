@@ -229,6 +229,7 @@
        async openAction() {
          await this.$store.dispatch('getList')
          this.list = this.$store.state.table.list.data
+         // console.log(this.list)
          this.action = !this.action
          setTimeout(() => {
            M.FormSelect.init(this.$refs.select)
@@ -286,15 +287,8 @@
           action3_check2: this.action3_check2,
           action3_check3: this.action3_check3,
         }
-        await this.$store.dispatch('changeFile', formData)
-        this.action = !this.action
-        this.loader = true
-        this.file = this.$store.state.table.file.data
-        setTimeout(() => {
-          if (this.file.length !== 0) {
-            this.loader = false
-          }
-        }, 500)
+       await this.$store.dispatch('changeFile', formData)
+       this.action = !this.action
       }
     },
     mounted() {
