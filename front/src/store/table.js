@@ -18,7 +18,7 @@ export default {
   },
   actions: {
     async uploadFile({dispatch, commit}, formData) {
-      // console.log(formData)
+      // console.log(checkData)
       // console.log('succes')
       return new Promise((resolve, reject) => {
         axios.post( 'http://localhost:5000/',

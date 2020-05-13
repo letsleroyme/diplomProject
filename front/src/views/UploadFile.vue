@@ -12,12 +12,17 @@
               <input class="file-path validate" type="text">
             </div>
           </div>
+          <div class="check">
+            <label>
+              <input type="checkbox" @click="checked"/>
+              <span>Первая строка является заголовком</span>
+            </label>
+          </div>
         </form>
       </div>
       <div class="col l1 ">
         <div class="upload-btn">
           <button class="btn" @click="submitFile">Загрузить</button>
-<!--          <div>{{info}}</div>-->
         </div>
       </div>
     </div>
@@ -30,15 +35,24 @@ export default {
   name: 'uploadFile',
   data:()=>({
     file: '',
-    info: null
+    check: false
   }),
   methods: {
     handleUploadFile() {
       this.file = this.$refs.file.files[0]
     },
+    checked() {
+      this.check = !this.check
+    },
     async submitFile() {
       let formData = new FormData()
       formData.append('file', this.file)
+      formData.append('check', this.check)
+      // let formData = {
+      //   file: this.file,
+      //   // check: this.check
+      // }
+      console.log(formData.get('check'))
       await this.$store.dispatch('uploadFile', formData)
       await this.$router.push('/tables')
     }
@@ -53,6 +67,13 @@ export default {
     padding-top: 70px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
+
+    .check {
+      padding-left: 2px;
+      span {
+        color: #575757;
+      }
+    }
 
     .upload-btn {
       padding-top: 15px;
