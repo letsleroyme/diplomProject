@@ -18,9 +18,13 @@
         <div v-else class="table-main">
           <div class="table-button">
             <button class="btn" @click="openAction">Предварительная обработка данных</button>
-            <button class="btn">Кнопка 2</button>
+            <button class="btn" @click="openChart">График</button>
             <button class="btn">Кнопка 3</button>
             <button class="btn">Кнопка 4</button>
+          </div>
+
+          <div class="table-chart" v-if="isChart">
+            <ChartTable />
           </div>
 
           <div v-if="action" class="table-action">
@@ -192,6 +196,7 @@
             </div>
           </div>
 
+
           <div class="table-body">
             <table>
               <tr v-for="i in file">
@@ -206,12 +211,19 @@
 </template>
 
 <script>
+  import ChartTable from "../components/ChartTable";
+
   export default {
     name: 'tables',
+    components: {ChartTable},
+    comments: {
+      ChartTable
+    },
     data:()=>({
       loader: true,
       file: '',
       action: false,
+      isChart:false,
       numberColumns: [],
       categoricalColumns: [],
       textDataColumns: [],
@@ -226,7 +238,7 @@
       action3_check3: false,
     }),
     methods: {
-       async openAction() {
+      async openAction() {
          await this.$store.dispatch('getList')
          this.list = this.$store.state.table.list.data
          // console.log(this.list)
@@ -273,6 +285,9 @@
       action3check3() {
         this.action3_check3 = !this.action3_check3
       },
+      openChart() {
+        this.isChart = !this.isChart
+      },
       async changeFile() {
         let formData = {
           numberColumns: this.numberColumns,
@@ -300,6 +315,7 @@
     },
     mounted() {
       this.file = this.$store.state.table.file.data
+
       setTimeout(() => {
         if (this.file.length !== 0) {
           this.loader = false
@@ -480,6 +496,15 @@
           }
         }
       }
+
+      .table-chart {
+        margin: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        height: 600px;
+        overflow: scroll;
+      }
+
       .table-body {
         padding: 0 10px;
         overflow: scroll;
