@@ -7,7 +7,7 @@ export default {
   },
   mutations: {
     setFile(state, file) {
-      // console.log('mutation')
+      console.log('mutation')
       state.file = file
       // console.log(state.file)
     },
@@ -30,6 +30,7 @@ export default {
           }
         ).then(resp => {
           resolve(resp)
+          console.log(resp)
           commit('setFile', resp)
           })
           .catch(err => {
@@ -65,6 +66,7 @@ export default {
         ).then(resp => {
           resolve(resp)
           console.log(resp)
+          commit('setFile', resp)
         })
           .catch(err => {
             reject(err)
