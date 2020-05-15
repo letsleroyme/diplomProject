@@ -1,4 +1,5 @@
 import numpy as np
+from flask import jsonify
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
@@ -10,13 +11,74 @@ def countNaN(col):
     return k
 
 def RemoveNanForCol(data, colList):
-    newlist = (a-1 for a in colList)
-    return data.dropna(subset=newlist)
+    return data.dropna(subset=(a-1 for a in colList))
+
+def is_digit(string):
+    if string.isdigit():
+       return True
+    else:
+        try:
+            float(string)
+            return True
+        except ValueError:
+            return False
+
+def CheckNumericType(data, colList):
+    lst = []
+    newdata = data.dropna()
+    for col in colList:
+        for i in newdata.iloc[:, col-1]:
+            if not is_digit((str)(i)):
+                lst.append(col)
+                break
+    return lst
+
+def ProcessCheckBoxes(data, checkboxes, filename):
+    ListOfNumCols = GetNumListOfColumn(checkboxes['numberColumns'])
+    notNumericList = CheckNumericType(data, ListOfNumCols)
+    if notNumericList:
+        numstr = ''
+        for i in notNumericList:
+            numstr = numstr + (str)(i) + ', '
+        response = jsonify({'status': 405, 'error': 'Method Not Allowed',
+                            'message': 'Chosen column ' + numstr + ' - is not numeric and not allowed to process'})
+        response.status_code = 405
+        return 1, response
+    ListOfCatCols = GetNumListOfColumn(checkboxes['categoricalColumns'])
+    ListOfTextCols = GetNumListOfColumn(checkboxes['textDataColumns'])
+    outdata = data.copy()
+    if checkboxes['action1_check1']:
+        outdata = ReplaceNanForNumeric(outdata, ListOfNumCols, filename)
+    if checkboxes['action1_check2']:
+        outdata = RemoveNanForCol(outdata, ListOfNumCols)
+    if checkboxes['action2_check1']:
+        outdata = ReplaceNanForCategoric(outdata, ListOfCatCols)
+    if checkboxes['action2_check2']:
+        outdata = RemoveNanForCol(outdata, ListOfCatCols)
+    if checkboxes['action2_check3']:
+        outdata = ReplaceTextCategToNum(outdata, ListOfCatCols)
+    if checkboxes['action3_check1']:
+        outdata = GetLowLetterForText(outdata, ListOfTextCols)
+    if checkboxes['action3_check2']:
+        outdata = GetTextWithoutDots(outdata, ListOfTextCols)
+    if checkboxes['action3_check3']:
+        outdata = RemoveNanForCol(outdata, ListOfTextCols)
+    return 0, outdata
+
+def GetTableAfterPreProcessing(data, checkboxes, filename, header):
+    firstline = None
+    if header:# если первая строка - заголовок, делим на две чатсти(заголовок и датасет)
+        firstline = pd.DataFrame(data.iloc[0, :]).transpose()
+        data = data.iloc[1:, :]
+    i, outdata = ProcessCheckBoxes(data, checkboxes, filename)  # обработанный датасет
+    if i:#если есть ошибка
+        return outdata, i
+    return pd.concat([firstline, outdata], axis=0) if header else outdata, i
 
 #---------------------для числовых значений-------------------------------
 def GetMeanValueForCol(filename, colNumber, dt):
     data = np.genfromtxt(filename, dtype=float, usecols=colNumber, delimiter=",", skip_header=1)
-    return np.nanmean(data) if dt == float else int(np.nanmean(data))
+    return round(np.nanmean(data), 3) if dt == float else int(np.nanmean(data))
 
 def IsFloat(data):# если в столбце есть хоть один эл-т с точкой то флоат
     for i in data:
@@ -24,16 +86,15 @@ def IsFloat(data):# если в столбце есть хоть один эл-�
             continue
         if '.' in i:
             return True
-        else:
-            continue
     return False
 
 def ReplaceNanForNumeric(data, colList, filename):# датасет, номер столбца, имя файла
     newdata = data.copy()
     for i in colList:
-        df = float if IsFloat(data.iloc[:, i-1]) else int
-        mean = GetMeanValueForCol(filename, i, df)
-        newdata.iloc[:, i-1] = data.iloc[:, i-1].fillna(mean)
+        if(countNaN(newdata.iloc[:, i-1])):
+            df = float if IsFloat(data.iloc[:, i-1]) else int
+            mean = GetMeanValueForCol(filename, i, df)
+            newdata.iloc[:, i-1] = data.iloc[:, i-1].fillna(mean)
     return newdata# датасет
 #-------------------------------------------------------------------------
 #---------------------для категориальнх значений--------------------------
@@ -44,12 +105,13 @@ def GetTheMostCommonValueForCol(data, numcol):
 def ReplaceNanForCategoric(data, colList):
     newdata = data.copy()
     for colnum in colList:
-        cv = GetTheMostCommonValueForCol(data, colnum)
-        k = 0
-        for i in data.iloc[:, colnum - 1]:
-            if (str)(i) == 'nan':
-                newdata.iloc[k, colnum - 1] = cv
-            k = k + 1
+        if countNaN(newdata.iloc[:, colnum - 1]):
+            cv = GetTheMostCommonValueForCol(data, colnum)
+            k = 0
+            for i in data.iloc[:, colnum - 1]:
+                if str(i) == 'nan':
+                    newdata.iloc[k, colnum - 1] = cv
+                k = k + 1
     return newdata
 
 def ReplaceTextCategToNum(data, colList):
@@ -79,6 +141,7 @@ def GetTextWithoutDots(data, colList):
     for i in colList:
         newdata.iloc[:, i-1] = newdata.iloc[:, i-1].replace('[^a-zA-Z0-9]', ' ', regex=True)
     return newdata
+#-------------------------------------------------------------------------
 
 def GetDictColumns(data):
     dct = {}
