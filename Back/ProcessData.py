@@ -143,10 +143,10 @@ def GetTextWithoutDots(data, colList):
     return newdata
 #-------------------------------------------------------------------------
 
-def GetDictColumns(data):
+def GetDictColumns(data, fl):
     dct = {}
     for i in range(data.shape[1]):
-        dct[i+1] =(str)(i+1)+' ('+(str)(countNaN(data.iloc[:, i]))+' NaN)'
+        dct[i+1] =(str)(i+1)+' ('+(str)(countNaN(data.iloc[:, i]))+' NaN)' if fl else (str)(i+1)
     return dct
 
 def GetDictTable(data):

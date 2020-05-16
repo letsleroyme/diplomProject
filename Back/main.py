@@ -53,7 +53,21 @@ def tbl():
         s2.pdData = outdata
         return outdata if isError else jsonify(GetDictTable(outdata))
     else:
-        return jsonify(GetDictColumns(data))# вернуть список столбцов в виде джсон
+        return jsonify(GetDictColumns(data, 1))# вернуть список столбцов в виде джсон
+
+
+@app.route("/graphs", methods=['GET','POST'])
+def graph():
+    s3 = Singleton()
+    data = s3.pdData
+    if request.method == 'POST':
+        data = data.iloc[1:, :]
+        numcol = 3
+        values = data.iloc[:, numcol-1].value_counts().index.tolist()
+        amountOfValues = data.groupby([numcol-1]).size().tolist()
+        return jsonify({'labels': sorted(values), 'data': amountOfValues})
+    else:
+        return jsonify(GetDictColumns(data, 0))
 
 
 if __name__ == "__main__":
