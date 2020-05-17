@@ -3,7 +3,8 @@ import axios from 'axios'
 export default {
   state: {
     file: '',
-    list: ''
+    list: '',
+    listColumnChooseChart: ''
   },
   mutations: {
     setFile(state, file) {
@@ -14,6 +15,9 @@ export default {
     setList(state, list) {
       state.list = list
       // console.log(state.list)
+    },
+    setListColumnChooseChart(state, list) {
+      state.listColumnChooseChart = list
     }
   },
   actions: {
@@ -74,5 +78,39 @@ export default {
           })
       })
     },
+    async getListColumnChooseChart({commit}) {
+      return new Promise((resolve, reject) => {
+        axios.get('http://localhost:5000/graphs')
+          .then(resp => {
+            resolve(resp)
+            commit('setListColumnChooseChart', resp)
+          })
+          .catch(err => {
+            reject(err)
+            console.log(err)
+          })
+      })
+    },
+    async buildChart({dispatch, commit}, formData) {
+      console.log(formData)
+      // return new Promise((resolve, reject) => {
+      //   axios.post( 'http://localhost:5000/graphs',
+      //     formData,
+      //     {
+      //       headers: {
+      //         'Content-Type': "application/json"
+      //       }
+      //     }
+      //   ).then(resp => {
+      //     resolve(resp)
+      //     console.log(resp)
+      //     // commit('setFile', resp)
+      //   })
+      //     .catch(err => {
+      //       reject(err)
+      //       console.log(err)
+      //     })
+      // })
+    }
   }
 }

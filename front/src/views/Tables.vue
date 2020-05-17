@@ -18,13 +18,15 @@
         <div v-else class="table-main">
           <div class="table-button">
             <button class="btn" @click="openAction">Предварительная обработка данных</button>
-            <button class="btn" @click="openChart">График</button>
-            <button class="btn">Кнопка 3</button>
+            <button class="btn" @click="openChooseChart">График</button>
+            <button class="btn" @click="uploadNewFile">Загрузить новый файл</button>
             <button class="btn">Кнопка 4</button>
           </div>
 
+          <ChooseChart v-if="isChooseChart" @choose="chooseChartHandler"/>
+
           <div class="table-chart" v-if="isChart">
-            <ChartTable />
+            <ChartTable/>
           </div>
 
           <div v-if="action" class="table-action">
@@ -212,17 +214,19 @@
 
 <script>
   import ChartTable from "../components/ChartTable";
+  import ChooseChart from "../components/ChooseChart";
 
   export default {
     name: 'tables',
-    components: {ChartTable},
-    comments: {
-      ChartTable
+    components: {
+      ChartTable,
+      ChooseChart
     },
     data:()=>({
       loader: true,
       file: '',
       action: false,
+      isChooseChart: false,
       isChart:false,
       numberColumns: [],
       categoricalColumns: [],
@@ -238,15 +242,21 @@
       action3_check3: false,
     }),
     methods: {
+      uploadNewFile() {
+        this.$router.push('/')
+      },
+      // Блок action
       async openAction() {
-         await this.$store.dispatch('getList')
-         this.list = this.$store.state.table.list.data
-         // console.log(this.list)
-         this.action = !this.action
-         setTimeout(() => {
-           M.FormSelect.init(this.$refs.select)
-           M.FormSelect.init(this.$refs.select2)
-           M.FormSelect.init(this.$refs.select3)
+        await this.$store.dispatch('getList')
+        this.list = this.$store.state.table.list.data
+        this.action = !this.action
+        this.isChooseChart = false
+        this.isChart = false
+
+        setTimeout(() => {
+          M.FormSelect.init(this.$refs.select)
+          M.FormSelect.init(this.$refs.select2)
+          M.FormSelect.init(this.$refs.select3)
         }, 0)
       },
       action1check1() {
@@ -285,9 +295,6 @@
       action3check3() {
         this.action3_check3 = !this.action3_check3
       },
-      openChart() {
-        this.isChart = !this.isChart
-      },
       async changeFile() {
         let formData = {
           numberColumns: this.numberColumns,
@@ -304,6 +311,17 @@
         }
         await this.$store.dispatch('changeFile', formData)
         this.action = !this.action
+        this.numberColumns = []
+        this.categoricalColumns = []
+        this.textDataColumns = []
+        this.action1_check1 = false
+        this.action1_check2 = false
+        this.action2_check1 = false
+        this.action2_check2 = false
+        this.action2_check3 = false
+        this.action3_check1 = false
+        this.action3_check2 = false
+        this.action3_check3 = false
         this.loader = true
         this.file = this.$store.state.table.file.data
         setTimeout(() => {
@@ -311,6 +329,16 @@
             this.loader = false
           }
         }, 500)
+      },
+      // Блок Chart
+      openChooseChart() {
+        this.isChart = false
+        this.action = false
+        this.isChooseChart = !this.isChooseChart
+      },
+      chooseChartHandler(isChart) {
+        this.isChooseChart = !this.isChooseChart
+        this.isChart = isChart
       }
     },
     mounted() {
@@ -338,13 +366,11 @@
       .table-button {
         padding: 20px;
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         height: 100px;
       }
       .table-action {
         display: flex;
-        /*border-bottom: 1px solid grey;*/
-        /*border-top: 1px solid grey;*/
         border-radius: 5px;
         margin: 0 10px 20px 10px;
         box-shadow: 0 0 5px rgba(0,0,0,0.5);
