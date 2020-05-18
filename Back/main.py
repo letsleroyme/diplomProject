@@ -37,11 +37,11 @@ def upload():
     f.save(str(pathlib.Path(__file__).parent.absolute()) + '\\' + fileName)
     data = pd.read_csv(fileName, header=None)
     s1 = Singleton()
-    s1.pdData = data
-    s1.header = check
+    s1.pdData = data.iloc[1:, :] if check else data
+    s1.header = pd.DataFrame(data.iloc[0, :]).transpose() if check else None
     s1.filename = fileName
-    dct = GetDictTable(s1.pdData)
-    return jsonify(dct)
+    dct = GetDictTable(pd.concat([s1.header, s1.pdData], axis=0))
+    return dct
 
 @app.route("/table", methods=['GET','POST'])
 def tbl():
@@ -50,10 +50,10 @@ def tbl():
     if request.method == 'POST':
         requestDict = request.get_json(force=True)# ответ с фронта
         outdata, isError = GetTableAfterPreProcessing(data, requestDict, s2.filename, s2.header)# обработанный датасет
-        s2.pdData = outdata
-        return outdata if isError else jsonify(GetDictTable(outdata))
+        s2.pdData = outdata.iloc[1:, :] if len(s2.header) else outdata
+        return outdata if isError else GetDictTable(outdata)
     else:
-        return jsonify(GetDictColumns(data, 1))# вернуть список столбцов в виде джсон
+        return GetDictColumns(data, 1)
 
 
 @app.route("/graphs", methods=['GET','POST'])
@@ -61,13 +61,18 @@ def graph():
     s3 = Singleton()
     data = s3.pdData
     if request.method == 'POST':
-        data = data.iloc[1:, :]
-        numcol = 3
+        requestData = request.get_json(force=True)
+        grType = 'notСhosen'
+        for key, value in requestData.items():
+            if value==True:
+                grType = key.split("s")[1]
+        numcol = (int)(requestData['selectColumn'])
         values = data.iloc[:, numcol-1].value_counts().index.tolist()
         amountOfValues = data.groupby([numcol-1]).size().tolist()
-        return jsonify({'labels': sorted(values), 'data': amountOfValues})
+        response = {'GraphType': grType, 'labels': sorted(values), 'data': amountOfValues}
+        return response
     else:
-        return jsonify(GetDictColumns(data, 0))
+        return GetDictColumns(data, 0)
 
 
 if __name__ == "__main__":

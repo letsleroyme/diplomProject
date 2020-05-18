@@ -66,14 +66,10 @@ def ProcessCheckBoxes(data, checkboxes, filename):
     return 0, outdata
 
 def GetTableAfterPreProcessing(data, checkboxes, filename, header):
-    firstline = None
-    if header:# если первая строка - заголовок, делим на две чатсти(заголовок и датасет)
-        firstline = pd.DataFrame(data.iloc[0, :]).transpose()
-        data = data.iloc[1:, :]
     i, outdata = ProcessCheckBoxes(data, checkboxes, filename)  # обработанный датасет
     if i:#если есть ошибка
         return outdata, i
-    return pd.concat([firstline, outdata], axis=0) if header else outdata, i
+    return pd.concat([header, outdata], axis=0) if len(header) else outdata, i
 
 #---------------------для числовых значений-------------------------------
 def GetMeanValueForCol(filename, colNumber, dt):
@@ -171,3 +167,5 @@ def GetNumListOfColumn(lst):
     for i in lst:
         outlst.append((int)(i.split(" ")[0]))
     return outlst
+
+
