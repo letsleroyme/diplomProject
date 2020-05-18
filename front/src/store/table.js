@@ -4,7 +4,8 @@ export default {
   state: {
     file: '',
     list: '',
-    listColumnChooseChart: ''
+    listColumnChooseChart: '',
+    chartData: ''
   },
   mutations: {
     setFile(state, file) {
@@ -18,6 +19,10 @@ export default {
     },
     setListColumnChooseChart(state, list) {
       state.listColumnChooseChart = list
+    },
+    setChartData(state, data) {
+      state.chartData = data.data
+      // console.log(state.chartData)
     }
   },
   actions: {
@@ -57,8 +62,6 @@ export default {
       })
     },
     async changeFile({dispatch, commit}, formData) {
-      // console.log(formData)
-      // console.log('succes')
       return new Promise((resolve, reject) => {
         axios.post( 'http://localhost:5000/table',
           formData,
@@ -93,24 +96,24 @@ export default {
     },
     async buildChart({dispatch, commit}, formData) {
       console.log(formData)
-      // return new Promise((resolve, reject) => {
-      //   axios.post( 'http://localhost:5000/graphs',
-      //     formData,
-      //     {
-      //       headers: {
-      //         'Content-Type': "application/json"
-      //       }
-      //     }
-      //   ).then(resp => {
-      //     resolve(resp)
-      //     console.log(resp)
-      //     // commit('setFile', resp)
-      //   })
-      //     .catch(err => {
-      //       reject(err)
-      //       console.log(err)
-      //     })
-      // })
+      return new Promise((resolve, reject) => {
+        axios.post( 'http://localhost:5000/graphs',
+          formData,
+          {
+            headers: {
+              'Content-Type': "application/json"
+            }
+          }
+        ).then(resp => {
+          resolve(resp)
+          console.log(resp)
+          commit('setChartData', resp)
+        })
+          .catch(err => {
+            reject(err)
+            console.log(err)
+          })
+      })
     }
   }
 }

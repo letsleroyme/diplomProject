@@ -48,11 +48,6 @@ export default {
       let formData = new FormData()
       formData.append('file', this.file)
       formData.append('check', this.check)
-      // let formData = {
-      //   file: this.file,
-      //   // check: this.check
-      // }
-      console.log(formData.get('check'))
       await this.$store.dispatch('uploadFile', formData)
       await this.$router.push('/tables')
     }

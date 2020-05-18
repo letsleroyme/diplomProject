@@ -5,16 +5,21 @@
 </div>
 
 <script>
-  import {Line} from 'vue-chartjs';
+  import {Bar, Pie} from 'vue-chartjs';
   export default {
     name: "ChartTable",
-    extends: Line,
+    data: () =>({
+      chartData: ''
+    }),
+    extends: Bar,
     mounted() {
+      this.chartData = this.$store.state.table.chartData
+      console.log(this.chartData.data)
       this.renderChart({
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: this.chartData.labels,
         datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
+          label: this.chartData.labels,
+          data: this.chartData.data,
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',
@@ -35,8 +40,8 @@
         }]
       })
       // const canvas = document.querySelector('canvas')
-      // canvas.style.width = 900 + 'px'
-      // canvas.style.height = 800 + 'px'
+      // canvas.style.width = 80 + '%'
+      // canvas.style.height = 80 + '%'
     }
   }
 </script>
