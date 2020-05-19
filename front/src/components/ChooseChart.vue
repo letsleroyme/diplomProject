@@ -33,7 +33,6 @@
     data: () => ({
       selectColumn: [],
       list: '',
-      isChart: true,
       isBar: false,
       isPie: false
     }),
@@ -49,13 +48,28 @@
         }
       },
       async chooseChartHandler() {
+        if (this.isBar === false && this.isPie === false) {
+          M.toast({
+            html: 'Выберите тип графика',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
+        } else if (this.selectColumn.length === 0){
+          M.toast({
+            html: 'Выберите колонку',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
+        }
         let formData = {
           selectColumn: this.selectColumn,
           isBar: this.isBar,
           isPie: this.isPie
         }
         await this.$store.dispatch('buildChart', formData)
-        this.$emit('choose', this.isChart)
+        this.$emit('choose')
       }
     },
     async mounted() {

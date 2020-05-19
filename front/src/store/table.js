@@ -9,26 +9,20 @@ export default {
   },
   mutations: {
     setFile(state, file) {
-      console.log('mutation')
       state.file = file
-      // console.log(state.file)
     },
     setList(state, list) {
       state.list = list
-      // console.log(state.list)
     },
     setListColumnChooseChart(state, list) {
       state.listColumnChooseChart = list
     },
     setChartData(state, data) {
       state.chartData = data.data
-      // console.log(state.chartData)
     }
   },
   actions: {
     async uploadFile({dispatch, commit}, formData) {
-      // console.log(checkData)
-      // console.log('succes')
       return new Promise((resolve, reject) => {
         axios.post( 'http://localhost:5000/',
           formData,
@@ -39,7 +33,6 @@ export default {
           }
         ).then(resp => {
           resolve(resp)
-          console.log(resp)
           commit('setFile', resp)
           })
           .catch(err => {
@@ -72,7 +65,6 @@ export default {
           }
         ).then(resp => {
           resolve(resp)
-          console.log(resp)
           commit('setFile', resp)
         })
           .catch(err => {
@@ -95,7 +87,6 @@ export default {
       })
     },
     async buildChart({dispatch, commit}, formData) {
-      console.log(formData)
       return new Promise((resolve, reject) => {
         axios.post( 'http://localhost:5000/graphs',
           formData,
@@ -106,7 +97,6 @@ export default {
           }
         ).then(resp => {
           resolve(resp)
-          console.log(resp)
           commit('setChartData', resp)
         })
           .catch(err => {

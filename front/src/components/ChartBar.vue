@@ -1,20 +1,19 @@
 <div class="col l12">
   <div class="table-chart">
-    <canvas id="canvas" width="400" height="300"></canvas>
+    <canvas id="canvas"></canvas>
   </div>
 </div>
 
 <script>
-  import {Bar, Pie} from 'vue-chartjs';
+  import {Bar} from 'vue-chartjs';
   export default {
-    name: "ChartTable",
+    name: "ChartBar",
     data: () =>({
       chartData: ''
     }),
     extends: Bar,
     mounted() {
       this.chartData = this.$store.state.table.chartData
-      console.log(this.chartData.data)
       this.renderChart({
         labels: this.chartData.labels,
         datasets: [{
@@ -39,9 +38,6 @@
           borderWidth: 1
         }]
       })
-      // const canvas = document.querySelector('canvas')
-      // canvas.style.width = 80 + '%'
-      // canvas.style.height = 80 + '%'
     }
   }
 </script>

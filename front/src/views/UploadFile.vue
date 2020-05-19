@@ -45,6 +45,23 @@ export default {
       this.check = !this.check
     },
     async submitFile() {
+      if (this.file === '' || this.file === undefined) {
+        M.toast({
+          html: 'Загрузите файл',
+          displayLength: 2000,
+          classes: 'red accent-4'
+        })
+        return
+      }
+      let csv = this.file.name.split('.')[1]
+      if (csv !== 'csv') {
+        M.toast({
+          html: 'Формат файла должен быть ".csv"',
+          displayLength: 2000,
+          classes: 'red accent-4'
+        })
+        return
+      }
       let formData = new FormData()
       formData.append('file', this.file)
       formData.append('check', this.check)

@@ -25,8 +25,12 @@
 
           <ChooseChart v-if="isChooseChart" @choose="chooseChartHandler"/>
 
-          <div class="table-chart" v-if="isChart">
-            <ChartTable/>
+          <div class="table-chart" v-if="isChartBar">
+            <ChartBar/>
+          </div>
+
+          <div class="table-chart" v-if="isChartPie">
+            <ChartPie />
           </div>
 
           <div v-if="action" class="table-action">
@@ -213,13 +217,15 @@
 </template>
 
 <script>
-  import ChartTable from "../components/ChartTable";
+  import ChartBar from "../components/ChartBar";
+  import ChartPie from "../components/ChartPie";
   import ChooseChart from "../components/ChooseChart";
 
   export default {
     name: 'tables',
     components: {
-      ChartTable,
+      ChartBar,
+      ChartPie,
       ChooseChart
     },
     data:()=>({
@@ -227,7 +233,8 @@
       file: '',
       action: false,
       isChooseChart: false,
-      isChart:false,
+      isChartBar:false,
+      isChartPie: false,
       numberColumns: [],
       categoricalColumns: [],
       textDataColumns: [],
@@ -251,7 +258,8 @@
         this.list = this.$store.state.table.list.data
         this.action = !this.action
         this.isChooseChart = false
-        this.isChart = false
+        this.isChartPie = false
+        this.isChartBar = false
 
         setTimeout(() => {
           M.FormSelect.init(this.$refs.select)
@@ -332,13 +340,19 @@
       },
       // Блок Chart
       openChooseChart() {
-        this.isChart = false
+        this.isChartPie = false
+        this.isChartBar = false
         this.action = false
         this.isChooseChart = !this.isChooseChart
       },
-      chooseChartHandler(isChart) {
+      chooseChartHandler() {
         this.isChooseChart = !this.isChooseChart
-        this.isChart = isChart
+        let chartType = this.$store.state.table.chartData
+        if (chartType.GraphType === 'Bar') {
+          this.isChartBar = true
+        } else if(chartType.GraphType === 'Pie') {
+          this.isChartPie = true
+        }
       }
     },
     mounted() {
