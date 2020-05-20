@@ -25,6 +25,10 @@
 
           <ChooseChart v-if="isChooseChart" @choose="chooseChartHandler"/>
 
+          <div class="table-chart" v-if="isChartLine">
+            <ChartLine />
+          </div>
+
           <div class="table-chart" v-if="isChartBar">
             <ChartBar/>
           </div>
@@ -217,6 +221,7 @@
 </template>
 
 <script>
+  import ChartLine from "../components/ChartLine";
   import ChartBar from "../components/ChartBar";
   import ChartPie from "../components/ChartPie";
   import ChooseChart from "../components/ChooseChart";
@@ -224,6 +229,7 @@
   export default {
     name: 'tables',
     components: {
+      ChartLine,
       ChartBar,
       ChartPie,
       ChooseChart
@@ -233,6 +239,7 @@
       file: '',
       action: false,
       isChooseChart: false,
+      isChartLine: false,
       isChartBar:false,
       isChartPie: false,
       numberColumns: [],
@@ -258,6 +265,7 @@
         this.list = this.$store.state.table.list.data
         this.action = !this.action
         this.isChooseChart = false
+        this.isChartLine = false
         this.isChartPie = false
         this.isChartBar = false
 
@@ -265,6 +273,8 @@
           M.FormSelect.init(this.$refs.select)
           M.FormSelect.init(this.$refs.select2)
           M.FormSelect.init(this.$refs.select3)
+          M.FormSelect.init(this.$refs.select4)
+
         }, 0)
       },
       action1check1() {
@@ -340,6 +350,7 @@
       },
       // Блок Chart
       openChooseChart() {
+        this.isChartLine = false
         this.isChartPie = false
         this.isChartBar = false
         this.action = false
@@ -348,9 +359,13 @@
       chooseChartHandler() {
         this.isChooseChart = !this.isChooseChart
         let chartType = this.$store.state.table.chartData
+        if (chartType.GraphType === 'Line') {
+          this.isChartLine = true
+        }
         if (chartType.GraphType === 'Bar') {
           this.isChartBar = true
-        } else if(chartType.GraphType === 'Pie') {
+        }
+        if(chartType.GraphType === 'Pie') {
           this.isChartPie = true
         }
       }

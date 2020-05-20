@@ -1,6 +1,12 @@
 <template>
   <div class="choose">
     <div class="chooseChart col l6">
+    <div @change="chooseChartLine">
+        <label>
+          <input type="checkbox" v-model="isLine"/>
+          <span>Линейный график</span>
+        </label>
+      </div>
       <div @change="chooseChartBar">
         <label>
           <input type="checkbox" v-model="isBar"/>
@@ -33,22 +39,33 @@
     data: () => ({
       selectColumn: [],
       list: '',
+      isLine: false,
       isBar: false,
       isPie: false
     }),
     methods: {
-      chooseChartBar() {
-        if (this.isBar && this.isPie) {
+    chooseChartLine() {
+        if (this.isBar && this.isLine || this.isPie && this.isLine ) {
           this.isPie = false
-        }
-      },
-      chooseChartPie() {
-        if (this.isPie && this.isBar) {
           this.isBar = false
         }
       },
+      chooseChartBar() {
+        if (this.isBar && this.isPie || this.isBar && this.isLine) {
+          this.isPie = false
+          this.isLine = false
+
+        }
+      },
+      chooseChartPie() {
+        if (this.isBar && this.isPie || this.isLine && this.isPie) {
+          this.isBar = false
+          this.isLine = false
+
+        }
+      },
       async chooseChartHandler() {
-        if (this.isBar === false && this.isPie === false) {
+        if (this.isBar === false && this.isPie === false && this.isLine === false) {
           M.toast({
             html: 'Выберите тип графика',
             displayLength: 2000,
@@ -65,6 +82,7 @@
         }
         let formData = {
           selectColumn: this.selectColumn,
+          isLine: this.isLine,
           isBar: this.isBar,
           isPie: this.isPie
         }
