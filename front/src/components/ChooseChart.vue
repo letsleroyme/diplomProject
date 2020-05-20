@@ -1,7 +1,7 @@
 <template>
   <div class="choose">
     <div class="chooseChart col l6">
-    <div @change="chooseChartLine">
+      <div @change="chooseChartLine">
         <label>
           <input type="checkbox" v-model="isLine"/>
           <span>Линейный график</span>
@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="input-field col l6 chooseColumn">
-      <select ref="select" v-model="selectColumn">
+      <select ref="select" v-model="selectColumn" multiple>
         <option value="" disabled>Выберите колонку</option>
         <option :value="i" v-for="i in list">{{i}}</option>
       </select>
@@ -80,6 +80,7 @@
           })
           return
         }
+        console.log(typeof this.selectColumn)
         let formData = {
           selectColumn: this.selectColumn,
           isLine: this.isLine,

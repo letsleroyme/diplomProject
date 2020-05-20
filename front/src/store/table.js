@@ -97,6 +97,7 @@ export default {
           }
         ).then(resp => {
           resolve(resp)
+          console.log(resp)
           commit('setChartData', resp)
         })
           .catch(err => {
