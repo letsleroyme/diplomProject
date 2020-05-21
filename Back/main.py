@@ -62,15 +62,7 @@ def graph():
     data = s3.pdData
     if request.method == 'POST':
         requestData = request.get_json(force=True)
-        grType = 'notСhosen'
-        for key, value in requestData.items():
-            if value==True:
-                grType = key.split("s")[1]
-        numcol = (int)(requestData['selectColumn'])
-        values = data.iloc[:, numcol-1].value_counts().index.tolist()
-        amountOfValues = data.groupby([numcol-1]).size().tolist()
-        response = {'GraphType': grType, 'labels': sorted(values), 'data': amountOfValues}
-        return response
+        return GetDataForCharts(requestData, data)
     else:
         return GetDictColumns(data, 0)
 

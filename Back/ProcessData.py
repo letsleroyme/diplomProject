@@ -33,6 +33,15 @@ def CheckNumericType(data, colList):
                 break
     return lst
 
+def TurnToString(data):
+    newdata = data.copy()
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            if type(data.iloc[i, j]) != str:
+                newdata.iloc[i, j] = (str)(data.iloc[i, j])
+    return newdata
+
+
 def ProcessCheckBoxes(data, checkboxes, filename):
     ListOfNumCols = GetNumListOfColumn(checkboxes['numberColumns'])
     notNumericList = CheckNumericType(data, ListOfNumCols)
@@ -69,6 +78,7 @@ def GetTableAfterPreProcessing(data, checkboxes, filename, header):
     i, outdata = ProcessCheckBoxes(data, checkboxes, filename)  # обработанный датасет
     if i:#если есть ошибка
         return outdata, i
+    outdata = TurnToString(outdata)
     return pd.concat([header, outdata], axis=0) if len(header) else outdata, i
 
 #---------------------для числовых значений-------------------------------
@@ -93,7 +103,7 @@ def ReplaceNanForNumeric(data, colList, filename):# датасет, номер �
             newdata.iloc[:, i-1] = data.iloc[:, i-1].fillna(mean)
     return newdata# датасет
 #-------------------------------------------------------------------------
-#---------------------для категориальнх значений--------------------------
+#---------------------для категориальных значений--------------------------
 def GetTheMostCommonValueForCol(data, numcol):
     lst = data.iloc[:, numcol-1].value_counts().index.tolist()
     return lst[0]
@@ -168,4 +178,26 @@ def GetNumListOfColumn(lst):
         outlst.append((int)(i.split(" ")[0]))
     return outlst
 
-
+def GetDataForCharts(requestData, data):
+    responseDct = {}
+    for key, value in requestData.items():
+        if value == True:
+            responseDct['GraphType'] = key.split("s")[1]
+    i = 1
+    labelDct = {}
+    dataDct = {}
+    headDct = {}
+    for numcol in requestData['selectColumn']:
+        values = sorted(data.iloc[:, (int)(numcol) - 1].value_counts().index.tolist())# labels
+        amountOfValues = data.groupby([(int)(numcol) - 1]).size().tolist()# data
+        if countNaN(data.iloc[:, (int)(numcol)-1]):
+            values.append('Nan')
+            amountOfValues.append(countNaN(data.iloc[:, (int)(numcol)-1]))
+        labelDct[i] = values
+        dataDct[i] = amountOfValues
+        headDct[i] = 'Column #'+numcol
+        i += 1
+    responseDct['labels'] = labelDct
+    responseDct['data'] = dataDct
+    responseDct['header'] = headDct
+    return responseDct
