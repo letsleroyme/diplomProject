@@ -15,10 +15,10 @@
     mounted() {
       this.chartData = this.$store.state.table.chartData
       this.renderChart({
-        labels: this.chartData.labels,
+        labels: this.chartData.labels[1],
         datasets: [{
-          label: this.chartData.labels,
-          data: this.chartData.data,
+          label: this.chartData.header[1],
+          data: this.chartData.data[1],
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',

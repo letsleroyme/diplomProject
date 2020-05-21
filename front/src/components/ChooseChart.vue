@@ -79,8 +79,22 @@
             classes: 'red accent-4'
           })
           return
+        } else if (this.selectColumn.length > 2) {
+          M.toast({
+            html: 'Выберите не больше двух колонок',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
+        } else if (this.selectColumn.length > 1 && this.isPie) {
+          M.toast({
+            html: 'Выберите только одну колонку',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
         }
-        console.log(typeof this.selectColumn)
+
         let formData = {
           selectColumn: this.selectColumn,
           isLine: this.isLine,

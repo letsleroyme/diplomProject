@@ -76,7 +76,6 @@
       isChartLine: false,
       isChartBar:false,
       isChartPie: false,
-
     }),
     methods: {
       uploadNewFile() {
@@ -114,11 +113,9 @@
         let chartType = this.$store.state.table.chartData
         if (chartType.GraphType === 'Line') {
           this.isChartLine = true
-        }
-        if (chartType.GraphType === 'Bar') {
+        } else if (chartType.GraphType === 'Bar') {
           this.isChartBar = true
-        }
-        if(chartType.GraphType === 'Pie') {
+        } else if(chartType.GraphType === 'Pie') {
           this.isChartPie = true
         }
       }

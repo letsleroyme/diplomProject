@@ -15,65 +15,79 @@
     mounted() {
       this.chartData = this.$store.state.table.chartData
 
-      const densityData = {
-        label: 'Density of Planet (kg/m3)',
-        data: [5427, 5243, 5514, 3933, 1326, 687, 1271, 1638],
-        backgroundColor: 'rgba(0, 99, 132, 0.6)',
-        borderColor: 'rgba(0, 99, 132, 1)',
-        yAxisID: "y-axis-density"
-      };
+      let counter = 0
+      for( let n in this.chartData.data) {
+        counter++
+      }
 
-      const gravityData = {
-        label: 'Gravity of Planet (m/s2)',
-        data: [3.7, 8.9, 9.8, 3.7, 23.1, 9.0, 8.7, 11.0],
-        backgroundColor: 'rgba(99, 132, 0, 0.6)',
-        borderColor: 'rgba(99, 132, 0, 1)',
-        yAxisID: "y-axis-gravity"
-      };
+      console.log(counter)
+      console.log(this.chartData.data[1])
+      console.log(this.chartData.data[2])
+      console.log(this.chartData.header);
 
-      const planetData = {
-        labels: ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
-        datasets: [densityData, gravityData]
-      };
 
-      const chartOptions = {
-        scales: {
-          xAxes: [{
-            barPercentage: 1,
-            categoryPercentage: 0.6
-          }],
-          yAxes: [{
-            id: "y-axis-density"
-          }, {
-            id: "y-axis-gravity"
-          }]
+      if (counter === 2) {
+        const data1 = {
+          label: this.chartData.header[1],
+          data: this.chartData.data[1],
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1,
+          yAxisID: "y-axis-density"
+        };
+        const data2 = {
+          label: this.chartData.header[2],
+          data: this.chartData.data[2],
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1,
+          yAxisID: "y-axis-gravity"
+        };
+        const allData = {
+          labels: this.chartData.labels[2],
+          datasets: [data1, data2]
         }
-      };
-      this.renderChart(planetData, chartOptions)
-      // this.renderChart({
-      //   labels: this.chartData.labels,
-      //   datasets: [{
-      //     label: this.chartData.labels,
-      //     data: this.chartData.data,
-      //     backgroundColor: [
-      //       'rgba(255, 99, 132, 0.2)',
-      //       'rgba(54, 162, 235, 0.2)',
-      //       'rgba(255, 206, 86, 0.2)',
-      //       'rgba(75, 192, 192, 0.2)',
-      //       'rgba(153, 102, 255, 0.2)',
-      //       'rgba(255, 159, 64, 0.2)'
-      //     ],
-      //     borderColor: [
-      //       'rgba(255, 99, 132, 1)',
-      //       'rgba(54, 162, 235, 1)',
-      //       'rgba(255, 206, 86, 1)',
-      //       'rgba(75, 192, 192, 1)',
-      //       'rgba(153, 102, 255, 1)',
-      //       'rgba(255, 159, 64, 1)'
-      //     ],
-      //     borderWidth: 1
-      //   }]
-      // })
+        const chartOptions = {
+          scales: {
+            xAxes: [{
+              barPercentage: 1,
+              categoryPercentage: 0.6
+            }],
+            yAxes: [{
+              id: "y-axis-density"
+            }, {
+              id: "y-axis-gravity"
+            }]
+          }
+        }
+        this.renderChart(allData, chartOptions)
+      } else if (counter === 1){
+        this.renderChart({
+          labels: this.chartData.labels[1],
+          datasets: [{
+            label: this.chartData.header[1],
+            data: this.chartData.data[1],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+              'rgba(153, 102, 255, 0.5)',
+              'rgba(255, 159, 64, 0.5)'
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+          }]
+        })
+      }
+
     }
   }
 </script>
