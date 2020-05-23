@@ -20,12 +20,6 @@
         counter++
       }
 
-      console.log(counter)
-      console.log(this.chartData.data[1])
-      console.log(this.chartData.data[2])
-      console.log(this.chartData.header);
-
-
       if (counter === 2) {
         const data1 = {
           label: this.chartData.header[1],

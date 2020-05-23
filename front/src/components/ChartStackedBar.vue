@@ -7,7 +7,7 @@
 <script>
   import {Bar} from 'vue-chartjs';
   export default {
-    name: "ChartBar",
+    name: "ChartStackedBar",
     data: () =>({
       chartData: ''
     }),

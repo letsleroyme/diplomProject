@@ -39,6 +39,10 @@
             <ChartPie />
           </div>
 
+          <div class="table-chart" v-if="isChartStackedBar">
+            <ChartStackedBar />
+          </div>
+
           <div class="table-body">
             <table>
               <tr v-for="i in file">
@@ -58,6 +62,7 @@
   import ChartPie from "../components/ChartPie";
   import ChooseChart from "../components/ChooseChart";
   import ChangeTable from "../components/ChangeTable";
+  import ChartStackedBar from "../components/ChartStackedBar";
 
   export default {
     name: 'tables',
@@ -66,6 +71,7 @@
       ChartLine,
       ChartBar,
       ChartPie,
+      ChartStackedBar,
       ChooseChart
     },
     data:()=>({
@@ -76,6 +82,7 @@
       isChartLine: false,
       isChartBar:false,
       isChartPie: false,
+      isChartStackedBar: false
     }),
     methods: {
       uploadNewFile() {
@@ -117,6 +124,8 @@
           this.isChartBar = true
         } else if(chartType.GraphType === 'Pie') {
           this.isChartPie = true
+        } else if(chartType.GraphType === 'StackedBar') {
+          this.isChartStackedBar = true
         }
       }
     },

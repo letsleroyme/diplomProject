@@ -19,12 +19,33 @@
           <span>Круговая диаграмма</span>
         </label>
       </div>
+      <div @change="chooseChartStackedBar">
+        <label>
+          <input type="checkbox" v-model="isStackedBar"/>
+          <span>Гистограмма с прирощением</span>
+        </label>
+      </div>
     </div>
     <div class="input-field col l6 chooseColumn">
-      <select ref="select" v-model="selectColumn" multiple>
-        <option value="" disabled>Выберите колонку</option>
-        <option :value="i" v-for="i in list">{{i}}</option>
-      </select>
+
+      <div>
+        <select ref="select" v-model="selectColumn" multiple >
+          <option value="" disabled>Выберите колонку</option>
+          <option :value="i" v-for="i in list">{{i}}</option>
+        </select>
+      </div>
+
+      <div class="selectStackedBar">
+        <p>Колонки для гистограммы с приращением</p>
+        <select ref="selectX" v-model="columnX">
+          <option value="" disabled>Выберите колонку X</option>
+          <option :value="i" v-for="i in list">{{i}}</option>
+        </select>
+        <select ref="selectY" v-model="columnY">
+          <option value="" disabled>Выберите колонку Y</option>
+          <option :value="i" v-for="i in list">{{i}}</option>
+        </select>
+      </div>
 
       <div class="button">
         <button class="btn" @click="chooseChartHandler">Применить</button>
@@ -38,50 +59,61 @@
     name: "ChooseChart",
     data: () => ({
       selectColumn: [],
+      columnX: [],
+      columnY: [],
       list: '',
       isLine: false,
       isBar: false,
-      isPie: false
+      isPie: false,
+      isStackedBar: false,
     }),
     methods: {
     chooseChartLine() {
-        if (this.isBar && this.isLine || this.isPie && this.isLine ) {
+        if (this.isLine) {
           this.isPie = false
           this.isBar = false
+          this.isStackedBar = false
         }
       },
       chooseChartBar() {
-        if (this.isBar && this.isPie || this.isBar && this.isLine) {
+        if (this.isBar) {
           this.isPie = false
           this.isLine = false
-
+          this.isStackedBar = false
         }
       },
       chooseChartPie() {
-        if (this.isBar && this.isPie || this.isLine && this.isPie) {
+        if (this.isPie) {
           this.isBar = false
           this.isLine = false
-
+          this.isStackedBar = false
+        }
+      },
+      chooseChartStackedBar() {
+        if (this.isStackedBar) {
+          this.isBar = false
+          this.isLine = false
+          this.isPie = false
         }
       },
       async chooseChartHandler() {
-        if (this.isBar === false && this.isPie === false && this.isLine === false) {
+        if (this.isBar === false && this.isPie === false && this.isLine === false && this.isStackedBar === false) {
           M.toast({
             html: 'Выберите тип графика',
             displayLength: 2000,
             classes: 'red accent-4'
           })
           return
-        } else if (this.selectColumn.length === 0){
+        } else if (this.selectColumn.length === 0 && (this.columnX.length === 0 || this.columnY === 0)){
           M.toast({
             html: 'Выберите колонку',
             displayLength: 2000,
             classes: 'red accent-4'
           })
           return
-        } else if (this.selectColumn.length > 2) {
+        } else if (this.selectColumn.length > 1) {
           M.toast({
-            html: 'Выберите не больше двух колонок',
+            html: 'Выберите только одну колонку',
             displayLength: 2000,
             classes: 'red accent-4'
           })
@@ -93,14 +125,62 @@
             classes: 'red accent-4'
           })
           return
+        } else if (this.columnX.length !== 0 && this.columnY.length !== 0 && this.isStackedBar === false) {
+          M.toast({
+            html: 'Выберите гистограмму с приращением',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
+        } else if ((this.columnX.length === 0 || this.columnY.length === 0) && this.isStackedBar) {
+          M.toast({
+            html: 'Выберите колонки для гистограммы с приращением',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
+        } else if ((this.columnX.length !== 0 || this.columnY.length !== 0) && this.selectColumn.length !== 0) {
+          M.toast({
+            html: 'Выберите только колонки для гистограммы или только колонки для диаграмм',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
+        } else if (this.selectColumn.length !== 0 && (this.columnX.length !== 0 || this.columnY.length !== 0)) {
+          M.toast({
+            html: 'Выберите только колонки для гистограммы или только колонки для диаграмм',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
+        } else if (this.columnX === this.columnY) {
+          M.toast({
+            html: 'Выберите разные колонки для гистограммы с приращением',
+            displayLength: 2000,
+            classes: 'red accent-4'
+          })
+          return
+        }
+
+
+        if (this.columnX.length !== 0) {
+          this.columnX = this.columnX.split()
+        }
+
+        if (this.columnY.length !== 0) {
+          this.columnY = this.columnY.split()
         }
 
         let formData = {
           selectColumn: this.selectColumn,
+          columnX: this.columnX,
+          columnY: this.columnY,
           isLine: this.isLine,
           isBar: this.isBar,
-          isPie: this.isPie
+          isPie: this.isPie,
+          isStackedBar: this.isStackedBar
         }
+        console.log(formData)
         await this.$store.dispatch('buildChart', formData)
         this.$emit('choose')
       }
@@ -110,6 +190,8 @@
       this.list = this.$store.state.table.listColumnChooseChart.data
       setTimeout(() => {
         M.FormSelect.init(this.$refs.select)
+        M.FormSelect.init(this.$refs.selectX)
+        M.FormSelect.init(this.$refs.selectY)
       }, 0)
     }
   }
@@ -143,6 +225,16 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+
+      .selectStackedBar {
+        margin-top: 25px;
+        margin-bottom: 10px;
+        p{
+          margin: 0;
+          font-size: 14px;
+          color: black;
+        }
+      }
 
       .button {
         margin: 5px 0 10px 0;
