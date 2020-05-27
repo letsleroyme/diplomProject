@@ -7,11 +7,7 @@ import pathlib
 from corsFIX import *
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/*": {
-        "origins": "*"
-    }
-})
+CORS(app, resources=r'/*')
 
 class Singleton(object):
     def __new__(cls):
@@ -71,6 +67,6 @@ def graph():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0")
 
 
