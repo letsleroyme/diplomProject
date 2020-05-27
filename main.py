@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd
 import json
-from Back.ProcessData import *
+from ProcessData import *
 import pathlib
 
 app = Flask(__name__)
