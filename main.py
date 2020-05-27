@@ -32,7 +32,7 @@ def upload():
         response.status_code = 415
         return response
     #f.save('C:\\Users\\Дарья\\Desktop\\Диплом\\diplomProject\\Back\\' + fileName)
-    f.save(str(pathlib.Path(__file__).parent.absolute()) + '\\' + fileName)
+    f.save(str(pathlib.Path(__file__).parent.absolute()) + '/' + fileName)
     data = pd.read_csv(fileName, header=None)
     s1 = Singleton()
     s1.pdData = data.iloc[1:, :] if check else data
