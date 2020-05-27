@@ -8,7 +8,7 @@ from corsFIX import *
 import os
 
 app = Flask(__name__)
-#CORS(app, resources=r'/*')
+CORS(app, resources=r'/*')
 
 class Singleton(object):
     def __new__(cls):
@@ -30,7 +30,7 @@ def after_request(response):
   return response
 
 @app.route("/", methods=['POST'])
-@crossdomain(origin='*')
+#@crossdomain(origin='*')
 def upload():
     f = request.files['file']
     fileName = f.filename
@@ -52,7 +52,7 @@ def upload():
     return dct
 
 @app.route("/table", methods=['GET','POST'])
-@crossdomain(origin='*')
+#@crossdomain(origin='*')
 def tbl():
     s2 = Singleton()
     data = s2.pdData
@@ -66,7 +66,7 @@ def tbl():
 
 
 @app.route("/graphs", methods=['GET','POST'])
-@crossdomain(origin='*')
+#@crossdomain(origin='*')
 def graph():
     s3 = Singleton()
     data = s3.pdData
