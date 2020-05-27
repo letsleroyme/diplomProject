@@ -9,9 +9,10 @@ app = Flask(__name__)
 CORS(app)
 cors = CORS(app, resources={
     r"/*": {
-        "origins": "https://diplom-front.herokuapp.com/"
+        "origins": "*"
     }
 })
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 class Singleton(object):
     def __new__(cls):
@@ -23,6 +24,7 @@ class Singleton(object):
     filename = None
 
 @app.route("/", methods=['POST'])
+@cross_origin()
 def upload():
     f = request.files['file']
     fileName = f.filename
@@ -44,6 +46,7 @@ def upload():
     return dct
 
 @app.route("/table", methods=['GET','POST'])
+@cross_origin()
 def tbl():
     s2 = Singleton()
     data = s2.pdData
@@ -57,6 +60,7 @@ def tbl():
 
 
 @app.route("/graphs", methods=['GET','POST'])
+@cross_origin()
 def graph():
     s3 = Singleton()
     data = s3.pdData
