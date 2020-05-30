@@ -75,6 +75,17 @@ def graph():
         return GetDataForCharts(requestData, data)
     else:
         return GetDictColumns(data, 0)
+ 
+@app.route("/request", methods=['GET','POST'])
+def rqst():
+    s4 = Singleton()
+    data = s4.pdData
+    if request.method == 'POST':
+        requestData = request.get_json(force=True)
+        print(MakeARequest(requestData, data, s4.header))
+        return MakeARequest(requestData, data, s4.header)
+    else:
+        return GetDictColumns(data, 0)
 
 
 if __name__ == "__main__":
