@@ -219,3 +219,22 @@ def GetDataForCharts(requestData, data):
         responseDct['data'] = dataDct
         responseDct['header'] = headDct
     return responseDct
+
+def MakeARequest(requestData, data, header):
+    colnum = (int)(requestData['column']) - 1
+    value = requestData['value']
+    variation = {
+        '=': data[(data.iloc[:, colnum] == value)],
+        '>': data[(data.iloc[:, colnum] > value)],
+        '<': data[(data.iloc[:, colnum] < value)],
+        '>=': data[(data.iloc[:, colnum] >= value)],
+        '<=': data[(data.iloc[:, colnum] <= value)],
+        '!=': data[(data.iloc[:, colnum] != value)],
+    }
+    dataAfterRequest = variation[requestData['operator']]
+    dct = GetDictTable(pd.concat([header, dataAfterRequest], axis=0))
+    response = {}
+    response['amountOfStr'] = dataAfterRequest.shape[0]
+    response['data'] = dct
+    print(response)
+    return response
