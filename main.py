@@ -82,8 +82,6 @@ def rqst():
     data = s4.pdData
     if request.method == 'POST':
         requestData = request.get_json(force=True)
-        print(MakeARequest(requestData, data, s4.header))
-        print(data[((float)(data.iloc[:, 5]) >= 55)])
         return MakeARequest(requestData, data, s4.header)
     else:
         return GetDictColumns(data, 0)

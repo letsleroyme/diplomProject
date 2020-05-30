@@ -222,12 +222,12 @@ def GetDataForCharts(requestData, data):
 
 def MakeARequest(requestData, data, header):
     colnum = (int)(requestData['column']) - 1
-    value =(float)(requestData['value'])
+    value =(requestData['value'])
     variation = {
         '=': data[(data.iloc[:, colnum] == value)],
         '>': data[(data.iloc[:, colnum] > value)],
         '<': data[(data.iloc[:, colnum] < value)],
-        '>=': data[(float)((float)(data.iloc[:, colnum]) >= value)],
+        '>=': data[((data.iloc[:, colnum]) >= value)],
         '<=': data[(data.iloc[:, colnum] <= value)],
         '!=': data[(data.iloc[:, colnum] != value)],
     }
