@@ -227,7 +227,7 @@ def MakeARequest(requestData, data, header):
         '=': data[(data.iloc[:, colnum] == value)],
         '>': data[(data.iloc[:, colnum] > value)],
         '<': data[(data.iloc[:, colnum] < value)],
-        '>=': data[((float)(data.iloc[:, colnum]) >= value)],
+        '>=': data[(float)((float)(data.iloc[:, colnum]) >= value)],
         '<=': data[(data.iloc[:, colnum] <= value)],
         '!=': data[(data.iloc[:, colnum] != value)],
     }
