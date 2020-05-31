@@ -246,7 +246,7 @@ def MakeARequest(requestData, data, header):
     strType = GetType(listOfConj)
     newd = data.copy()
     ndata = data.copy()
-    subs = [a for a in range(newd.shape[0])]
+    subs = [a for a in range(newd.shape[1])]
     if strType == 'AA':
         newd = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], newd)
         newd = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], newd)
