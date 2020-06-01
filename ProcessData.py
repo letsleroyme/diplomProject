@@ -262,7 +262,7 @@ def ForOr(listOfCol, listOfOperators, listOfValues, data):
     a2 = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], data, 0)
     res = pd.DataFrame()
     for i in range(data.shape[0]):
-        if a1.iloc[i] and a2.iloc[i]:
+        if a1.iloc[i] or a2.iloc[i]:
             res = res.append(pd.Series([a for a in data.iloc[i]]), ignore_index=True)
     return res
 
@@ -289,7 +289,7 @@ def MakeARequest(requestData, data, header):
         newd = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], newd, 1)
     dct = GetDictTable(pd.concat([header, newd], axis=0))
     response = {}
-    response['amountOfStr'] = newd.shape[1] -1
+    response['amountOfStr'] = newd.shape[0] -1
     response['data'] = dct
     print(response)
     return response
