@@ -238,6 +238,35 @@ def GetType(listOfConj):
         outstr = outstr + i[0]
     return outstr
 
+def ForAnd(listOfCol, listOfOperators, listOfValues, data, sz):
+    outdata = data.copy()
+    for i in range(sz):
+        outdata = ccs(listOfCol[i], listOfOperators[i], listOfValues[i], outdata, 1)
+    return outdata
+
+def ForAndOr(listOfCol, listOfOperators, listOfValues, data, isStraight, isOr):
+    a1 = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], data, 0) if isStraight else ccs(listOfCol[1], listOfOperators[1], listOfValues[1], data, 0)
+    a2 = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], data, 0) if isStraight else ccs(listOfCol[2], listOfOperators[2], listOfValues[2], data, 0)
+    a3 = ccs(listOfCol[2], listOfOperators[2], listOfValues[2], data, 0) if isStraight else ccs(listOfCol[0], listOfOperators[0], listOfValues[0], data, 0)
+    res = pd.DataFrame()
+    for i in range(data.shape[0]):
+        if isOr:
+            if a1.iloc[i] or a2.iloc[i] or a3.iloc[i]:
+                res = res.append(pd.Series([a for a in data.iloc[i]]), ignore_index=True)
+        else:
+            if a1.iloc[i] and a2.iloc[i] or a3.iloc[i]:
+                res = res.append(pd.Series([a for a in data.iloc[i]]), ignore_index=True)
+    return res
+
+def ForOr(listOfCol, listOfOperators, listOfValues, data):
+    a1 = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], data, 0)
+    a2 = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], data, 0)
+    res = pd.DataFrame()
+    for i in range(data.shape[0]):
+        if a1.iloc[i] and a2.iloc[i]:
+            res = res.append(pd.Series([a for a in data.iloc[i]]), ignore_index=True)
+    return res
+
 def MakeARequest(requestData, data, header):
     listOfConj = [(key.split("e")[2])[:-1] for key, value in requestData.items() if key.startswith('is') and value]
     listOfCol = [(int)(value) - 1 for key, value in requestData.items() if key.startswith('col') and value]
@@ -245,45 +274,23 @@ def MakeARequest(requestData, data, header):
     listOfValues = [value for key, value in requestData.items() if key.startswith('va') and value]
     strType = GetType(listOfConj)
     newd = data.copy()
-    ndata = data.copy()
-    subs = [a for a in range(newd.shape[1])]
     if strType == 'AA':
-        newd = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], newd)
-        newd = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], newd)
-        newd = ccs(listOfCol[2], listOfOperators[2], listOfValues[2], newd)
+        newd = ForAnd(listOfCol, listOfOperators, listOfValues, data, 3)
     if strType == 'AO':
-        ndata = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], ndata)
-        ndata = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], ndata)
-        forOr = ccs(listOfCol[2], listOfOperators[2], listOfValues[2], data)
-        newd = pd.concat([ndata, forOr], axis=0)
-        newd = newd.drop_duplicates(subset=subs)
+        newd = ForAndOr(listOfCol, listOfOperators, listOfValues, data, 1, 0)
     if strType == 'OA':
-        ndata = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], ndata)
-        ndata = ccs(listOfCol[2], listOfOperators[2], listOfValues[2], ndata)
-        forOr = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], data)
-        newd = pd.concat([ndata, forOr], axis=0)
-        newd = newd.drop_duplicates(subset=subs)
+        newd = ForAndOr(listOfCol, listOfOperators, listOfValues, data, 0, 0)
     if strType == 'OO':
-        ndata1 = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], data)
-        ndata2 = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], data)
-        ndata3 = ccs(listOfCol[2], listOfOperators[2], listOfValues[2], data)
-        newd = pd.concat([ndata1, ndata2, ndata3], axis=0)
-        newd = newd.drop_duplicates(subset=subs)
+        newd = ForAndOr(listOfCol, listOfOperators, listOfValues, data, 1, 1)
     if strType == 'A':
-        newd = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], newd)
-        newd = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], newd)
+        newd = ForAnd(listOfCol, listOfOperators, listOfValues, data, 2)
     if strType == 'O':
-        forOr = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], data)
-        forOr2 = ccs(listOfCol[1], listOfOperators[1], listOfValues[1], data)
-        newd = pd.concat([forOr, forOr2], axis=0)
-        newd = newd.drop_duplicates(subset=subs)
-
+        newd = ForOr(listOfCol, listOfOperators, listOfValues, data)
     if not len(strType):
-        newd = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], newd)
-
+        newd = ccs(listOfCol[0], listOfOperators[0], listOfValues[0], newd, 1)
     dct = GetDictTable(pd.concat([header, newd], axis=0))
     response = {}
-    response['amountOfStr'] = newd.shape[0] -1
+    response['amountOfStr'] = newd.shape[1] -1
     response['data'] = dct
     print(response)
     return response
