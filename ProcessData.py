@@ -220,17 +220,16 @@ def GetDataForCharts(requestData, data):
         responseDct['header'] = headDct
     return responseDct
 
-
-def ccs(col, op, value, data):
+def ccs(col, op, value, data, isFull):
     variation = {
-        '=': data[(data.iloc[:, col] == value)],
-        '>': data[(data.iloc[:, col] > value)],
-        '<': data[(data.iloc[:, col] < value)],
-        '>=': data[(data.iloc[:, col] >= value)],
-        '<=': data[(data.iloc[:, col] <= value)],
-        '!=': data[(data.iloc[:, col] != value)],
+        '=': (data.iloc[:, col] == value),
+        '>': (data.iloc[:, col] > value),
+        '<': (data.iloc[:, col] < value),
+        '>=': (data.iloc[:, col] >= value),
+        '<=': (data.iloc[:, col] <= value),
+        '!=': (data.iloc[:, col] != value),
     }
-    return variation[op]
+    return data[variation[op]] if isFull else variation[op]
 
 def GetType(listOfConj):
     outstr = ''
