@@ -5,7 +5,7 @@ import json
 from ProcessData import *
 import pathlib
 from corsFIX import *
-import os
+import os, getpass, platform
 
 app = Flask(__name__)
 CORS(app, resources=r'/*')
