@@ -86,6 +86,21 @@ def rqst():
     else:
         return GetDictColumns(data, 0)
 
+    
+@app.route("/fileSave", methods=['GET','POST'])
+def SaveCSV():
+    s5 = Singleton()
+    data = s5.pdData
+    type_os = platform.system()
+    username = getpass.getuser()
+    path = "/home/" + username + "/" + 'Загрузки' + "/" if type_os == 'Linux' else r"C:/Users/" + username + r"/" + 'Downloads' + r"/"
+    if request.method == 'POST':
+        s5.requestData.to_csv(path + 'fileRqst.csv', index=False, header=None)
+        return {'Success': 'File is saved'}
+    else:
+        s5.requestData.to_csv(path + 'fileRqst.csv', index=False, header=None)
+        return {'Success': 'File is saved'}
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
