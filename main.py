@@ -18,6 +18,7 @@ class Singleton(object):
     pdData = None
     header = None
     filename = None
+    requestData = None
 
 
 @app.after_request
@@ -82,6 +83,7 @@ def rqst():
     data = s4.pdData
     if request.method == 'POST':
         requestData = request.get_json(force=True)
+        s4.requestData = MakeARequest(requestData, data, s4.header)
         return MakeARequest(requestData, data, s4.header)
     else:
         return GetDictColumns(data, 0)
