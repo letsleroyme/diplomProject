@@ -291,5 +291,4 @@ def MakeARequest(requestData, data, header):
     response = {}
     response['amountOfStr'] = newd.shape[0] -1
     response['data'] = dct
-    print(response)
-    return response
+    return response, pd.concat([header, newd], axis=0)
