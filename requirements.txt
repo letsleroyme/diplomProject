@@ -1,4 +1,3 @@
-git+git://github.com/kracekumar/blaze.git
 appdirs==1.4.3
 astroid==2.3.3
 click==7.1.1
