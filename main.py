@@ -83,8 +83,9 @@ def rqst():
     data = s4.pdData
     if request.method == 'POST':
         requestData = request.get_json(force=True)
-        s4.requestData = MakeARequest(requestData, data, s4.header)
-        return MakeARequest(requestData, data, s4.header)
+        dct, dt = MakeARequest(requestData, data, s4.header)
+        s4.requestData = dt
+        return dct
     else:
         return GetDictColumns(data, 0)
 
