@@ -94,11 +94,17 @@ def rqst():
 def SaveCSV():
     s5 = Singleton()
     data = s5.pdData
+    rqs = s5.requestData
+    path = ''
     if request.method == 'POST':
         requestData = request.get_json(force=True)
         print(requestData)
-        data.to_csv('fileRqst.csv', index=False, header=None)
-        path = 'fileRqst.csv'
+        if requestData['saveRequestTable']:
+            rqs.to_csv('fileRqst.csv', index=False, header=None)
+            path = 'fileRqst.csv'
+        if requestData['saveMainTable']:
+            data.to_csv('fileMain.csv', index=False, header=None)
+            path = 'fileMain.csv'
         return send_file(path, as_attachment=True)
     else:
         return {'Success': 'File is saved'}
