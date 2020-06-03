@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS, cross_origin
 import pandas as pd
 import json
@@ -94,14 +94,13 @@ def rqst():
 def SaveCSV():
     s5 = Singleton()
     data = s5.pdData
-    type_os = platform.system()
-    username = getpass.getuser()
-    path = "/home/" + username + "/" + 'Загрузки' + "/" if type_os == 'Linux' else r"C:/Users/" + username + r"/" + 'Downloads' + r"/"
     if request.method == 'POST':
-        s5.requestData.to_csv(path + 'fileRqst.csv', index=False, header=None)
-        return {'Success': 'File is saved'}
+        requestData = request.get_json(force=True)
+        print(requestData)
+        data.to_csv('fileRqst.csv', index=False, header=None)
+        path = 'fileRqst.csv'
+        return send_file(path, as_attachment=True)
     else:
-        s5.requestData.to_csv(path + 'fileRqst.csv', index=False, header=None)
         return {'Success': 'File is saved'}
 
 
