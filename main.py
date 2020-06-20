@@ -112,6 +112,7 @@ def SaveCSV():
     
 @app.route("/sandbox", methods=['POST'])
 def sndbx():
+    print("lala")
     s6 = Singleton()
     data = s6.pdData
     print("abc")
