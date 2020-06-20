@@ -121,7 +121,7 @@ def sndbx():
         print('_________________________________')
         print(output)
         print('_________________________________')
-        if len(output["user_stderr"]):
+        if output["user_stderr"] != "":
             return output
         print(output["user_stdout"])
         return output["user_stdout"]
