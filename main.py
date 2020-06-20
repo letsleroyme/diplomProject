@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 import pandas as pd
 import json
 from ProcessData import *
+from sndbox import *
 import pathlib
 from corsFIX import *
 import os, getpass, platform
@@ -108,6 +109,17 @@ def SaveCSV():
         return send_file(path, as_attachment=True)
     else:
         return {'Success': 'File is saved'}
+    
+@app.route("/sandbox", methods=['POST'])
+def sndbx():
+    s6 = Singleton()
+    data = s6.pdData
+    if request.method == 'POST':
+        requestData = request.get_json(force=True)# тут словарь из строк кода
+        lstofStr = list(requestData.values())
+        print(lstofStr)
+        print(mainFunk(s6.filename, lstofStr))
+        return mainFunk(s6.filename, lstofStr)
 
 
 if __name__ == "__main__":
