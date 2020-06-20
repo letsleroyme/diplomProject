@@ -141,9 +141,6 @@ def json_finalizer(executor):
 
 
 def mainFunk(filename, ListOfStr):
-    data = pd.read_csv(filename)
-    print(data)
     for n in ListOfStr:
         f = exec_str(n, json_finalizer)
-        print(f)
     return f
