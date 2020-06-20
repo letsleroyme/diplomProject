@@ -121,10 +121,9 @@ def sndbx():
         print('_________________________________')
         print(output)
         print('_________________________________')
-        if output["user_stderr"] != "":
-            return output
-        print(output["user_stdout"])
-        return output["user_stdout"]
+
+        print((str)(output["user_stdout"]))
+        return (str)(output["user_stdout"]
 
 
 if __name__ == "__main__":
