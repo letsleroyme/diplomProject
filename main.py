@@ -114,12 +114,16 @@ def SaveCSV():
 def sndbx():
     s6 = Singleton()
     data = s6.pdData
+    print("abc")
     if request.method == 'POST':
+        print("a")
         requestData = request.get_json(force=True)# тут словарь из строк кода
+        print(requestData)
         lstofStr = list(requestData.values())
         print(lstofStr)
         print(mainFunk(s6.filename, lstofStr))
         return mainFunk(s6.filename, lstofStr)
+    return "success"
 
 
 if __name__ == "__main__":
