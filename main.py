@@ -117,10 +117,12 @@ def sndbx():
     if request.method == 'POST':
         requestData = request.get_json(force=True)# тут словарь из строк кода
         lstofStr = list(requestData.values())
-        print(lstofStr)
-        print(s6.filename)
-        print(mainFunk(s6.filename, lstofStr))
-        return mainFunk(s6.filename, lstofStr)
+        output = mainFunk(s6.filename, lstofStr)
+        print(output)
+        if len(output["user_stderr"]):
+            return output
+        print(output["user_stdout"])
+        return output["user_stdout"]
 
 
 if __name__ == "__main__":
