@@ -135,9 +135,9 @@ def exec_str(script_str, finalizer):
 
 
 def json_finalizer(executor):
-  return json.dumps(dict(code=executor.executed_script,
+  return dict(code=executor.executed_script,
                          user_stdout=executor.user_stdout.getvalue(),
-                         user_stderr=executor.user_stderr.getvalue()))
+                         user_stderr=executor.user_stderr.getvalue())
 
 
 def mainFunk(filename, ListOfStr):
