@@ -118,13 +118,10 @@ def sndbx():
         requestData = request.get_json(force=True)# тут словарь из строк кода
         lstofStr = list(requestData.values())
         output = mainFunk(s6.filename, lstofStr)
-        print('_________________________________')
-        print(output)
-        print('_________________________________')
         if len(output["user_stderr"]):
             return output["user_stderr"]
         print(output["user_stdout"])
-        return {'output':output["user_stdout"]}
+        return dict(output=output["user_stdout"])
 
 
 if __name__ == "__main__":
