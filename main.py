@@ -124,7 +124,7 @@ def sndbx():
         if len(output["user_stderr"]):
             return output["user_stderr"]
         print(output["user_stdout"])
-        return output["user_stdout"]
+        return {'output':output["user_stdout"]}
 
 
 if __name__ == "__main__":
