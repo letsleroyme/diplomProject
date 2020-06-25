@@ -294,7 +294,7 @@ def MakeARequest(requestData, data, header):
     return response, pd.concat([header, newd], axis=0)
 
 def GetDescribleStatistics(requestData, filename):
-    col = int(requestData['column'])
+    col = int(requestData['column'])-1
     dataCol = np.genfromtxt(filename, dtype=float, usecols=[col], delimiter=",", skip_header=1)
     a = {
         'Медиана': np.median(dataCol),
