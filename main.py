@@ -126,15 +126,16 @@ def sndbx():
 @app.route("/statistics", methods=['POST'])
 def statits():
     s7 = Singleton()
-    print("lalal")
-    print(s7.filename)
+    print('1')
     data = s7.pdData
     if request.method == 'POST':
-        print("rerer") 
+        print('2')
         requestData = request.get_json(force=True)
         output = GetDescribleStatistics(requestData, s7.filename)
-        print(output)  
-        return {'Value': str(output)}    
+        print({'Value': str(output)})
+        return {'Value': str(output)}
+    else:
+        return GetDictColumns(data, 0)   
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
