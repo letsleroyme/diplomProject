@@ -126,10 +126,14 @@ def sndbx():
 @app.route("/statistics", methods=['POST'])
 def statits():
     s7 = Singleton()
+    print("lalal")
+    print(s7.filename)
     data = s7.pdData
     if request.method == 'POST':
+        print("rerer") 
         requestData = request.get_json(force=True)
         output = GetDescribleStatistics(requestData, s7.filename)
+        print(output)  
         return {'Value': str(output)}    
 
 if __name__ == "__main__":
