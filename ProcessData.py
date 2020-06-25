@@ -292,3 +292,16 @@ def MakeARequest(requestData, data, header):
     response['amountOfStr'] = newd.shape[0] -1
     response['data'] = dct
     return response, pd.concat([header, newd], axis=0)
+
+def GetDescribleStatistics(requestData, filename):
+    col = int(requestData['column'])
+    dataCol = np.genfromtxt(filename, dtype=float, usecols=[col], delimiter=",", skip_header=1)
+    a = {
+        'Медиана': np.median(dataCol),
+        'Дисперсия': np.var(dataCol),
+        'Взвешенное среднее арифметическое': np.average(dataCol),
+        'Среднеквадратичное отклонение': np.std(dataCol),
+        'Среднее арифметическое': np.mean(dataCol),
+    }
+    print(requestData['operation'])
+    return a[requestData['operation']]
